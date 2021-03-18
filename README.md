@@ -1,5 +1,4 @@
 # DigitalRain
-Matrix digital rain.
 
 ![Screenshot](https://github.com/GhostOfMe/DigitalRain/blob/master/data/img/screenshot.png)
 
