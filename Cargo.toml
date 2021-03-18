@@ -8,8 +8,8 @@ edition = "2018"
 
 [dependencies]
 itertools = "0.10.0"
-ncurses = {version = "*", features=["wide"]}
-rand = "*"
+ncurses = {version = "5.1", features=["wide"]}
+rand = "0.8.3"
 
 
 
