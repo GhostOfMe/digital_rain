@@ -8,8 +8,8 @@ Rust implementation foating text from movie "The Matrix".
 
 Via Cargo:
 ```sh
-git clone https://github.com/GhostOfMe/DigitalRain.git
-cd DigitalRain
+git clone https://github.com/GhostOfMe/digital_rain.git
+cd digitalrain
 cargo install --path .
 digital_rain
 ```
