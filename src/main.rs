@@ -19,12 +19,4 @@ fn main() {
         show(&s);
         thread::sleep(time::Duration::from_millis(TIMEOUT));
     }
-
-    //cleanup_ui();
 }
-/*
-fn main() {
-  println!("Wide character support required");
-
-}
-*/
