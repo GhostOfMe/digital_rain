@@ -9,7 +9,7 @@ Rust implementation of foating text from movie "The Matrix".
 Via Cargo:
 ```sh
 git clone https://github.com/GhostOfMe/digital_rain.git
-cd digitalrain
+cd ./digital_rain
 cargo install --path .
 digital_rain
 ```
