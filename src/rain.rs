@@ -115,8 +115,8 @@ impl Screen {
             let dim_screen_cell = self.rng.gen::<f32>() < self.dim_rate;
 
             if mutate_screen_cell {
-                self.s[j][i].c = (0xFF67..0xFF9D as u32)
-                    .chain(0x30..0x5A as u32)
+                self.s[j][i].c = (LATIN_START..LATIN_END)
+                    .chain(JAPAN_START..JAPAN_START)
                     .choose(&mut self.rng)
                     .unwrap();
             }
