@@ -1,4 +1,4 @@
-# DigitalRain
+# digital_rain
 
 ![Screenshot](https://github.com/GhostOfMe/DigitalRain/blob/master/data/img/screenshot.png)
 
@@ -11,4 +11,5 @@ Via Cargo:
 git clone https://github.com/GhostOfMe/DigitalRain.git
 cd DigitalRain
 cargo install --path .
+digital_rain
 ```
