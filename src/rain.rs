@@ -9,9 +9,13 @@ const LATIN_END: u32 = 0x5A;
 const JAPAN_START: u32 = 0xFF67;
 const JAPAN_END: u32 = 0xFF9D;
 
-const DROP_RATE: f32 = 0.45;
+const DROP_RATE: f32 = 0.20;
 const MUTATE_RATE: f32 = 0.05;
 const DIM_RATE: f32 = 0.5;
+
+const MAX_INTENSITY_INDEX: i8 = 11;
+const INVISIBLE: i8 = -1;
+
 pub struct Screen {
     pub s: Vec<Vec<Cell>>,
     drops: Vec<Drop>,
@@ -21,6 +25,7 @@ pub struct Screen {
     mutate_rate: f32,
     dim_rate: f32,
     rng: ThreadRng,
+
 }
 
 #[derive(Clone)]
@@ -70,19 +75,18 @@ impl Screen {
             .filter(|x| x.y < self.max_y as i32 && x.x < self.max_x as i32)
             .collect();
 
-        let create_drop = self.rng.gen::<f32>() < self.drop_rate;
         self.mutate_screen();
 
         for d in self.drops.iter() {
             let (x, y) = (d.x as usize, d.y as usize);
-            self.s[y][x].b = 7;
+            self.s[y][x].b = MAX_INTENSITY_INDEX;
         }
 
         for d in self.drops.iter_mut() {
             d.y += 1;
         }
 
-        if create_drop {
+        if self.rng.gen::<f32>() < self.drop_rate * self.max_x as f32 / 80. {
             let new_drop = Drop {
                 y: 0,
                 x: self.rng.gen_range(0..self.max_x as i32),
@@ -94,26 +98,25 @@ impl Screen {
 
     fn mutate_screen(&mut self) {
         for (j, i) in (0..self.max_y).cartesian_product(0..self.max_x) {
-            if self.s[j][i].b == -1 {
+            if self.s[j][i].b == INVISIBLE {
                 continue;
             }
 
-            if self.s[j][i].b == 7 {
+            if self.s[j][i].b == MAX_INTENSITY_INDEX {
                 self.s[j][i].b -= 1;
                 continue;
             }
+
             if self.s[j][i].b == 0 {
-                self.s[j][i].b -= 1;
+                self.s[j][i].b = INVISIBLE;
                 continue;
             }
 
-            let mutate_screen_cell = self.rng.gen::<f32>() < self.mutate_rate;
-            let dim_screen_cell = self.rng.gen::<f32>() < self.dim_rate;
-
-            if mutate_screen_cell {
+            if self.rng.gen::<f32>() < self.mutate_rate {
                 self.s[j][i].c = get_random_char(&mut self.rng)
             }
-            if dim_screen_cell {
+
+            if self.rng.gen::<f32>() < self.dim_rate {
                 self.s[j][i].b -= 1
             }
         }

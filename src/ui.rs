@@ -5,7 +5,7 @@ use ncurses::*;
 const COLOR_BASE: i16 = 200;
 const COLOR_MAX: i16 = 1000;
 
-const INTENSITY: [i16; 8] = [1, 2, 2, 3, 4, 5, 4, 7];
+const INTENSITY: [i16; 12] = [1, 1, 2, 2, 2, 3, 3, 4, 4 , 5, 4, 7];
 
 pub fn init_ui() -> (usize, usize) {
     let (mut height, mut width) = (0, 0);
@@ -16,10 +16,10 @@ pub fn init_ui() -> (usize, usize) {
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_BLACK);
-    for i in 0..8 {
+    for i in 1..7 {
         init_pair(i + 1, i, COLOR_BLACK);
     }
-    for i in 1..5 {
+    for i in 1..6 {
         init_color(i, 0, i * COLOR_BASE, 0);
     }
 
