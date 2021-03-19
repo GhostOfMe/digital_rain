@@ -15,7 +15,8 @@ fn main() {
     let mut s = Screen::new(width, height);
 
     loop {
-        s.update();
+        let (y, x) = get_xy();
+        s.update(x, y);
         show(&s);
         thread::sleep(time::Duration::from_millis(TIMEOUT));
     }

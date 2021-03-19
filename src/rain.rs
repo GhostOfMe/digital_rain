@@ -2,6 +2,7 @@ use itertools::Itertools;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 use rand::{thread_rng, Rng};
+use std::cmp::max;
 
 const LATIN_START: u32 = 0x2A;
 const LATIN_END: u32 = 0x5A;
@@ -41,19 +42,7 @@ impl Screen {
     pub fn new(x: usize, y: usize) -> Self {
         let mut rng = thread_rng();
 
-        let s: Vec<Vec<Cell>> = (0..y)
-            .map(|_| {
-                (0..x)
-                    .map(|_| Cell {
-                        c: (LATIN_START..LATIN_END)
-                            .chain(JAPAN_START..JAPAN_END)
-                            .choose(&mut rng)
-                            .unwrap(),
-                        b: 0,
-                    })
-                    .collect()
-            })
-            .collect();
+        let s = get_cell_vec(&mut rng, x, y);
 
         Screen {
             s: s,
@@ -67,9 +56,32 @@ impl Screen {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, new_x: usize, new_y: usize) {
+        if new_x != self.max_x || new_y != self.max_y {
+            self.resize(new_x, new_y);
+            self.max_x = new_x;
+            self.max_y = new_y;
+        }
+
+        self.drops = self
+            .drops
+            .iter()
+            .cloned()
+            .filter(|x| x.y < self.max_y as i32 && x.x < self.max_x as i32)
+            .collect();
+        
         let create_drop = self.rng.gen::<f32>() < self.drop_rate;
         self.mutate_screen();
+
+        for d in self.drops.iter() {
+            let (x, y) = (d.x as usize, d.y as usize);
+            self.s[y][x].b = 7;
+        }
+
+        for d in self.drops.iter_mut() {
+            d.y += 1;
+        }
+
 
         if create_drop {
             let new_drop = Drop {
@@ -78,21 +90,6 @@ impl Screen {
                 passed: false,
             };
             self.drops.push(new_drop);
-        }
-        for d in self.drops.iter_mut() {
-            d.y += 1;
-        }
-
-        self.drops = self
-            .drops
-            .iter()
-            .cloned()
-            .filter(|x| x.y < self.max_y as i32)
-            .collect();
-
-        for d in self.drops.iter() {
-            let (x, y) = (d.x as usize, d.y as usize);
-            self.s[y][x].b = 7;
         }
     }
 
@@ -125,4 +122,46 @@ impl Screen {
             }
         }
     }
+
+    fn resize(&mut self, x: usize, y: usize) {
+        let diff_y = self.max_y as i32 - y as i32;
+        let diff_x = self.max_x as i32 - x as i32;
+
+        let s: Vec<Vec<Cell>> = (0..=max(y, self.max_y))
+            .map(|y_tmp|
+                (0..=max(x, self.max_x))
+                    .map(|x_tmp| 
+                      if x_tmp < self.max_x && y_tmp < self.max_y{
+                        self.s[y_tmp][x_tmp]
+                      }else{
+                        Cell {c: get_random_char(&mut self.rng),b: 0}
+                      }
+                    ).take(x).collect()
+            ).take(y)
+            .collect();
+
+        self.s = s; 
+    }
+}
+
+fn get_random_char(rng: &mut ThreadRng) -> u32 {
+    (LATIN_START..LATIN_END)
+        .chain(JAPAN_START..JAPAN_END)
+        .choose(rng)
+        .unwrap()
+}
+
+fn get_cell_vec(rng: &mut ThreadRng, x: usize, y: usize) -> Vec<Vec<Cell>> {
+    let s: Vec<Vec<Cell>> = (0..=y)
+        .map(|_| {
+            (0..=x)
+                .map(|_| Cell {
+                    c: get_random_char(rng),
+                    b: 0,
+                })
+                .collect()
+        })
+        .collect();
+
+    s
 }

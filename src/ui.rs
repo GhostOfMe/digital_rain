@@ -25,6 +25,13 @@ pub fn init_ui() -> (usize, usize) {
 
     init_color(6, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 
+    get_xy()
+}
+
+pub fn get_xy() -> (usize, usize) {
+    let (mut height, mut width) = (0, 0);
+    getmaxyx(stdscr(), &mut height, &mut width);
+
     (height as usize, width as usize)
 }
 
