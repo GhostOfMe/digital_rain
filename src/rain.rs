@@ -69,7 +69,7 @@ impl Screen {
             .cloned()
             .filter(|x| x.y < self.max_y as i32 && x.x < self.max_x as i32)
             .collect();
-        
+
         let create_drop = self.rng.gen::<f32>() < self.drop_rate;
         self.mutate_screen();
 
@@ -81,7 +81,6 @@ impl Screen {
         for d in self.drops.iter_mut() {
             d.y += 1;
         }
-
 
         if create_drop {
             let new_drop = Drop {
@@ -112,10 +111,7 @@ impl Screen {
             let dim_screen_cell = self.rng.gen::<f32>() < self.dim_rate;
 
             if mutate_screen_cell {
-                self.s[j][i].c = (LATIN_START..LATIN_END)
-                    .chain(JAPAN_START..JAPAN_START)
-                    .choose(&mut self.rng)
-                    .unwrap();
+                self.s[j][i].c = get_random_char(&mut self.rng)
             }
             if dim_screen_cell {
                 self.s[j][i].b -= 1
@@ -124,23 +120,26 @@ impl Screen {
     }
 
     fn resize(&mut self, x: usize, y: usize) {
-        let diff_y = self.max_y as i32 - y as i32;
-        let diff_x = self.max_x as i32 - x as i32;
-
         let s: Vec<Vec<Cell>> = (0..=max(y, self.max_y))
-            .map(|y_tmp|
+            .map(|y_tmp| {
                 (0..=max(x, self.max_x))
-                    .map(|x_tmp| 
-                      if x_tmp < self.max_x && y_tmp < self.max_y{
-                        self.s[y_tmp][x_tmp]
-                      }else{
-                        Cell {c: get_random_char(&mut self.rng),b: 0}
-                      }
-                    ).take(x).collect()
-            ).take(y)
+                    .map(|x_tmp| {
+                        if x_tmp < self.max_x && y_tmp < self.max_y {
+                            self.s[y_tmp][x_tmp]
+                        } else {
+                            Cell {
+                                c: get_random_char(&mut self.rng),
+                                b: 0,
+                            }
+                        }
+                    })
+                    .take(x)
+                    .collect()
+            })
+            .take(y)
             .collect();
 
-        self.s = s; 
+        self.s = s;
     }
 }
 
