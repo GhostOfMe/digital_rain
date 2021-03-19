@@ -1,6 +1,6 @@
 [package]
 name = "digital_rain"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["JQ <nail.prophet@gmail.com>"]
 edition = "2018"
 

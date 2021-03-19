@@ -6,8 +6,8 @@ use std::cmp::max;
 
 const LATIN_START: u32 = 0x2A;
 const LATIN_END: u32 = 0x5A;
-const JAPAN_START: u32 = 0xFF67;
-const JAPAN_END: u32 = 0xFF9D;
+const KANA_START: u32 = 0xFF66;
+const KANA_END: u32 = 0xFF9D;
 
 const DROP_RATE: f32 = 0.20;
 const MUTATE_RATE: f32 = 0.05;
@@ -32,7 +32,6 @@ pub struct Screen {
 pub struct Drop {
     x: i32,
     y: i32,
-    passed: bool,
 }
 
 #[derive(Copy, Clone)]
@@ -47,7 +46,7 @@ impl Screen {
     pub fn new(x: usize, y: usize) -> Self {
         let mut rng = thread_rng();
 
-        let s = get_cell_vec(&mut rng, x, y);
+        let s = new_cell_vec(&mut rng, x, y);
 
         Screen {
             s: s,
@@ -64,8 +63,6 @@ impl Screen {
     pub fn update(&mut self, new_x: usize, new_y: usize) {
         if new_x != self.max_x || new_y != self.max_y {
             self.resize(new_x, new_y);
-            self.max_x = new_x;
-            self.max_y = new_y;
         }
 
         self.drops = self
@@ -90,7 +87,6 @@ impl Screen {
             let new_drop = Drop {
                 y: 0,
                 x: self.rng.gen_range(0..self.max_x as i32),
-                passed: false,
             };
             self.drops.push(new_drop);
         }
@@ -143,17 +139,19 @@ impl Screen {
             .collect();
 
         self.s = s;
+        self.max_x = x;
+        self.max_y = y;
     }
 }
 
 fn get_random_char(rng: &mut ThreadRng) -> u32 {
     (LATIN_START..LATIN_END)
-        .chain(JAPAN_START..JAPAN_END)
+        .chain(KANA_START..KANA_END)
         .choose(rng)
         .unwrap()
 }
 
-fn get_cell_vec(rng: &mut ThreadRng, x: usize, y: usize) -> Vec<Vec<Cell>> {
+fn new_cell_vec(rng: &mut ThreadRng, x: usize, y: usize) -> Vec<Vec<Cell>> {
     let s: Vec<Vec<Cell>> = (0..=y)
         .map(|_| {
             (0..=x)
