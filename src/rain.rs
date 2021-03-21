@@ -25,7 +25,6 @@ pub struct Screen {
     mutate_rate: f32,
     dim_rate: f32,
     rng: ThreadRng,
-
 }
 
 #[derive(Clone)]
@@ -118,13 +117,13 @@ impl Screen {
         }
     }
 
-    fn resize(&mut self, x: usize, y: usize) {
-        let s: Vec<Vec<Cell>> = (0..=max(y, self.max_y))
-            .map(|y_tmp| {
-                (0..=max(x, self.max_x))
-                    .map(|x_tmp| {
-                        if x_tmp < self.max_x && y_tmp < self.max_y {
-                            self.s[y_tmp][x_tmp]
+    fn resize(&mut self, new_x: usize, new_y: usize) {
+        let s: Vec<Vec<Cell>> = (0..=max(new_y, self.max_y))
+            .map(|tmp_y| {
+                (0..=max(new_x, self.max_x))
+                    .map(|tmp_x| {
+                        if tmp_x < self.max_x && tmp_y < self.max_y {
+                            self.s[tmp_y][tmp_x]
                         } else {
                             Cell {
                                 c: get_random_char(&mut self.rng),
@@ -132,15 +131,15 @@ impl Screen {
                             }
                         }
                     })
-                    .take(x)
+                    .take(new_x)
                     .collect()
             })
-            .take(y)
+            .take(new_y)
             .collect();
 
         self.s = s;
-        self.max_x = x;
-        self.max_y = y;
+        self.max_x = new_x;
+        self.max_y = new_y;
     }
 }
 
@@ -152,7 +151,7 @@ fn get_random_char(rng: &mut ThreadRng) -> u32 {
 }
 
 fn new_cell_vec(rng: &mut ThreadRng, x: usize, y: usize) -> Vec<Vec<Cell>> {
-    let s: Vec<Vec<Cell>> = (0..=y)
+    (0..=y)
         .map(|_| {
             (0..=x)
                 .map(|_| Cell {
@@ -161,7 +160,5 @@ fn new_cell_vec(rng: &mut ThreadRng, x: usize, y: usize) -> Vec<Vec<Cell>> {
                 })
                 .collect()
         })
-        .collect();
-
-    s
+        .collect()
 }

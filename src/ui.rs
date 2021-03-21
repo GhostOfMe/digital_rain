@@ -5,7 +5,7 @@ use ncurses::*;
 const COLOR_BASE: i16 = 200;
 const COLOR_MAX: i16 = 1000;
 
-const INTENSITY: [i16; 12] = [1, 1, 2, 2, 2, 3, 3, 4, 4 , 5, 4, 7];
+const INTENSITY: [i16; 12] = [1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 4, 7];
 
 pub fn init_ui() -> (usize, usize) {
     let (mut height, mut width) = (0, 0);
