@@ -8,11 +8,9 @@ const COLOR_MAX: i16 = 1000;
 const INTENSITY: [i16; 12] = [1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 4, 7];
 
 pub fn init_ui() -> (usize, usize) {
-    let (mut height, mut width) = (0, 0);
     setlocale(LcCategory::all, "en_US.UTF-8");
     initscr();
     noecho();
-    getmaxyx(stdscr(), &mut height, &mut width);
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_BLACK);
