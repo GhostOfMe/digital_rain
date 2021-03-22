@@ -1,11 +1,12 @@
-use crate::rain::Screen;
+use crate::rain::{Screen, MAX_INTENSITY_INDEX};
 use itertools::Itertools;
 use ncurses::*;
 
 const COLOR_BASE: i16 = 200;
 const COLOR_MAX: i16 = 1000;
 
-const INTENSITY: [i16; 12] = [1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 4, 7];
+const INTENSITY: [i16; MAX_INTENSITY_INDEX as usize + 1] =
+    [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
 
 pub fn init_ui() -> (usize, usize) {
     setlocale(LcCategory::all, "en_US.UTF-8");
@@ -37,7 +38,7 @@ pub fn show(s: &Screen) {
     for (j, i) in (0..s.max_y).cartesian_product(0..s.max_x) {
         if s.s[j][i].b >= 0 {
             let b = s.s[j][i].b as usize;
-            let c = if b == 0 {' ' as u32} else {s.s[j][i].c};
+            let c = if b == 0 { ' ' as u32 } else { s.s[j][i].c };
             attron(COLOR_PAIR(INTENSITY[b]));
             mv(j as i32, i as i32);
             addstr(format!("{}", char::from_u32(c).expect("Invalid char")).as_ref());

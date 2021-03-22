@@ -9,11 +9,11 @@ const LATIN_END: u32 = 0x5A;
 const KANA_START: u32 = 0xFF66;
 const KANA_END: u32 = 0xFF9D;
 
-const DROP_RATE: f32 = 0.20;
-const MUTATE_RATE: f32 = 0.05;
+const DROP_RATE: f32 = 0.70;
+const MUTATE_RATE: f32 = 0.025;
 const DIM_RATE: f32 = 0.5;
 
-const MAX_INTENSITY_INDEX: i8 = 11;
+pub const MAX_INTENSITY_INDEX: i8 = 15;
 const INVISIBLE: i8 = -1;
 
 pub struct Screen {
@@ -82,12 +82,28 @@ impl Screen {
             d.y += 1;
         }
 
-        if self.rng.gen::<f32>() < self.drop_rate * self.max_x as f32 / 80. {
-            let new_drop = Drop {
-                y: 0,
-                x: self.rng.gen_range(0..self.max_x as i32),
-            };
-            self.drops.push(new_drop);
+        let mut drop_mul = self.drop_rate * self.max_x as f32 / 80.;
+
+        while drop_mul > 0. {
+            if self.rng.gen::<f32>() < drop_mul {
+                /*
+                    let new_drop = Drop { y: 0, x: self.rng.gen_range(0..self.max_x as i32) };
+                    self.drops.push(new_drop);
+                */
+
+                if let Some(x) = (0..self.max_x)
+                    .clone()
+                    .filter(|x| self.s[0][*x].b == -1)
+                    .choose(&mut thread_rng())
+                {
+                    let new_drop = Drop { y: 0, x: x as i32 };
+                    self.drops.push(new_drop);
+                }else{
+                    break
+                }
+
+                drop_mul -= 1.;
+            }
         }
     }
 
