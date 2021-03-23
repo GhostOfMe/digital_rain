@@ -9,7 +9,7 @@ const LATIN_END: u32 = 0x5A;
 const KANA_START: u32 = 0xFF66;
 const KANA_END: u32 = 0xFF9D;
 
-const DROP_RATE: f32 = 0.70;
+const DROP_RATE: f32 = 0.4;
 const MUTATE_RATE: f32 = 0.025;
 const DIM_RATE: f32 = 0.5;
 
@@ -82,7 +82,7 @@ impl Screen {
             d.y += 1;
         }
 
-        let mut drop_mul = self.drop_rate * self.max_x as f32 / 80.;
+        let mut drop_mul = self.drop_rate * 120. / 80.;
 
         while drop_mul > 0. {
             if self.rng.gen::<f32>() < drop_mul {
@@ -102,8 +102,9 @@ impl Screen {
                     break
                 }
 
-                drop_mul -= 1.;
             }
+
+            drop_mul -= 1.;
         }
     }
 
