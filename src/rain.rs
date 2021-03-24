@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 use rand::{thread_rng, Rng};
@@ -64,72 +63,71 @@ impl Screen {
             self.resize(new_x, new_y);
         }
 
-        self.drops = self
-            .drops
-            .iter()
-            .cloned()
-            .filter(|x| x.y < self.max_y as i32 && x.x < self.max_x as i32)
-            .collect();
-
         self.mutate_screen();
 
-        for d in self.drops.iter() {
-            let (x, y) = (d.x as usize, d.y as usize);
-            self.s[y][x].b = MAX_INTENSITY_INDEX;
-        }
-
-        for d in self.drops.iter_mut() {
-            d.y += 1;
-        }
+        let mut tmp_drops = self.drops.clone();
+        let tmp_max_y = self.max_y as i32;
+        let tmp_max_x = self.max_x as i32;
+        tmp_drops = tmp_drops
+            .iter()
+            .filter(|x| x.y < tmp_max_y && x.x < tmp_max_x)
+            .map(|d| {
+                unsafe {
+                    let mut cell = self
+                        .s
+                        .get_unchecked_mut(d.y as usize)
+                        .get_unchecked_mut(d.x as usize);
+                    cell.b = MAX_INTENSITY_INDEX;
+                }
+                Drop { x: d.x, y: d.y + 1 }
+            })
+            .collect();
 
         let mut drop_mul = self.drop_rate * 120. / 80.;
 
         while drop_mul > 0. {
             if self.rng.gen::<f32>() < drop_mul {
-                /*
-                    let new_drop = Drop { y: 0, x: self.rng.gen_range(0..self.max_x as i32) };
-                    self.drops.push(new_drop);
-                */
-
                 if let Some(x) = (0..self.max_x)
-                    .clone()
-                    .filter(|x| self.s[0][*x].b == -1)
+                    .filter(|x| unsafe { self.s.get_unchecked(0).get_unchecked(*x).b == -1 })
                     .choose(&mut thread_rng())
                 {
                     let new_drop = Drop { y: 0, x: x as i32 };
-                    self.drops.push(new_drop);
-                }else{
-                    break
+                    tmp_drops.push(new_drop);
+                } else {
+                    break;
                 }
-
             }
 
             drop_mul -= 1.;
         }
+
+        self.drops = tmp_drops;
     }
 
     fn mutate_screen(&mut self) {
-        for (j, i) in (0..self.max_y).cartesian_product(0..self.max_x) {
-            if self.s[j][i].b == INVISIBLE {
+        for cell in self
+            .s
+            .iter_mut()
+            .map(|row| row.iter_mut())
+            .flatten()
+            .filter(|c| c.b != INVISIBLE)
+        {
+            if cell.b == MAX_INTENSITY_INDEX {
+                cell.b -= 1;
                 continue;
             }
 
-            if self.s[j][i].b == MAX_INTENSITY_INDEX {
-                self.s[j][i].b -= 1;
-                continue;
-            }
-
-            if self.s[j][i].b == 0 {
-                self.s[j][i].b = INVISIBLE;
+            if cell.b == 0 {
+                cell.b = INVISIBLE;
                 continue;
             }
 
             if self.rng.gen::<f32>() < self.mutate_rate {
-                self.s[j][i].c = get_random_char(&mut self.rng)
+                cell.c = get_random_char(&mut self.rng)
             }
 
             if self.rng.gen::<f32>() < self.dim_rate {
-                self.s[j][i].b -= 1
+                cell.b -= 1
             }
         }
     }
