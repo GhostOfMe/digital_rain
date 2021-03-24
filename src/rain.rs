@@ -83,7 +83,7 @@ impl Screen {
             })
             .collect();
 
-        let mut drop_mul = self.drop_rate * 120. / 80.;
+        let mut drop_mul = self.drop_rate * self.max_x as f32 / 80.;
 
         while drop_mul > 0. {
             if self.rng.gen::<f32>() < drop_mul {
