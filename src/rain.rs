@@ -8,7 +8,7 @@ const LATIN_END: u32 = 0x5A;
 const KANA_START: u32 = 0xFF66;
 const KANA_END: u32 = 0xFF9D;
 
-const DROP_RATE: f32 = 0.4;
+const DROP_RATE: f32 = 0.3;
 const MUTATE_RATE: f32 = 0.025;
 const DIM_RATE: f32 = 0.5;
 
@@ -103,6 +103,7 @@ impl Screen {
 
         self.drops = tmp_drops;
     }
+    
 
     fn mutate_screen(&mut self) {
         for cell in self
@@ -112,6 +113,7 @@ impl Screen {
             .flatten()
             .filter(|c| c.b != INVISIBLE)
         {
+
             if cell.b == MAX_INTENSITY_INDEX {
                 cell.b -= 1;
                 continue;

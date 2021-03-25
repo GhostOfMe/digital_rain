@@ -10,8 +10,10 @@ const INTENSITY: [i16; MAX_INTENSITY_INDEX as usize + 1] =
 
 pub fn init_ui() -> (usize, usize) {
     setlocale(LcCategory::all, "en_US.UTF-8");
-    initscr();
+    let w = initscr();
     noecho();
+    nodelay(w, true);
+    raw();
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
     start_color();
     init_pair(1, COLOR_BLACK, COLOR_BLACK);
@@ -51,4 +53,12 @@ pub fn show(s: &Screen) {
         }
     }
     refresh();
+}
+
+pub fn term() -> bool {
+    getch() == 3
+}
+
+pub fn finish(){
+    endwin();
 }
