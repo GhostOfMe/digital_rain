@@ -2,7 +2,7 @@
 
 ![Screenshot](https://github.com/GhostOfMe/DigitalRain/blob/master/data/img/screenshot.gif)
 
-Rust implementation of foating text from movie "The Matrix".
+Rust implementation of foating text from the movie "The Matrix".
 
 # Installation
 
@@ -11,5 +11,10 @@ Via Cargo:
 git clone https://github.com/GhostOfMe/digital_rain.git
 cd ./digital_rain
 cargo install --path .
-digital_rain
+```
+# Usage
+
+Custom color is set via command line option.
+```sh
+digital_rain --color=#ff88ff
 ```
