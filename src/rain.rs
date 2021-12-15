@@ -103,7 +103,6 @@ impl Screen {
 
         self.drops = tmp_drops;
     }
-    
 
     fn mutate_screen(&mut self) {
         for cell in self
@@ -113,7 +112,6 @@ impl Screen {
             .flatten()
             .filter(|c| c.b != INVISIBLE)
         {
-
             if cell.b == MAX_INTENSITY_INDEX {
                 cell.b -= 1;
                 continue;
@@ -144,7 +142,7 @@ impl Screen {
                         } else {
                             Cell {
                                 c: get_random_char(&mut self.rng),
-                                b: 0,
+                                b: 1,
                             }
                         }
                     })

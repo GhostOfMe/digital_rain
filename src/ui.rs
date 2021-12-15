@@ -2,15 +2,14 @@ use crate::rain::{Screen, MAX_INTENSITY_INDEX};
 use itertools::Itertools;
 use ncurses::*;
 
-const COLOR_BASE_R: i16 = 152;      // Default 0
-const COLOR_BASE_G: i16 = 195;      // Default 200
-const COLOR_BASE_B: i16 = 121;      // Default 0
+const MUL: f32 = 0.65;
+
 const COLOR_MAX: i16 = 1000;
 
 const INTENSITY: [i16; MAX_INTENSITY_INDEX as usize + 1] =
     [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
 
-pub fn init_ui() -> (usize, usize) {
+pub fn init_ui(color: Option<(i16, i16, i16)>) -> (usize, usize) {
     setlocale(LcCategory::all, "en_US.UTF-8");
     let w = initscr();
     noecho();
@@ -18,15 +17,28 @@ pub fn init_ui() -> (usize, usize) {
     raw();
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
     start_color();
-    init_pair(1, COLOR_BLACK, COLOR_BLACK);
-    for i in 1..7 {
-        init_pair(i + 1, i, COLOR_BLACK);
-    }
-    for i in 1..6 {
-        init_color(i, i * COLOR_BASE_R, i * COLOR_BASE_G, i * COLOR_BASE_B);
+    ncurses::use_default_colors();
+
+    let (r, g, b) = match color {
+        Some(rgb) => (
+            (MUL * rgb.0 as f32) as i16,
+            (MUL * rgb.1 as f32) as i16,
+            (MUL * rgb.2 as f32) as i16,
+        ),
+        None => (0, 640 / 6, 0),
+    };
+
+    init_pair(1, -1, -1);
+
+    for i in 1..8 {
+        init_pair(i, i + 1, -1);
     }
 
-    init_color(6, COLOR_MAX, COLOR_MAX, COLOR_MAX);
+    for i in 1..7 {
+        init_color(i, i * r, i * g, i * b);
+    }
+
+    init_color(8, COLOR_MAX, COLOR_MAX, COLOR_MAX);
 
     get_xy()
 }
@@ -61,6 +73,6 @@ pub fn term() -> bool {
     getch() == 3
 }
 
-pub fn finish(){
+pub fn finish() {
     endwin();
 }
