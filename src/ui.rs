@@ -2,7 +2,9 @@ use crate::rain::{Screen, MAX_INTENSITY_INDEX};
 use itertools::Itertools;
 use ncurses::*;
 
-const COLOR_BASE: i16 = 200;
+const COLOR_BASE_R: i16 = 152;      // Default 0
+const COLOR_BASE_G: i16 = 195;      // Default 200
+const COLOR_BASE_B: i16 = 121;      // Default 0
 const COLOR_MAX: i16 = 1000;
 
 const INTENSITY: [i16; MAX_INTENSITY_INDEX as usize + 1] =
@@ -21,7 +23,7 @@ pub fn init_ui() -> (usize, usize) {
         init_pair(i + 1, i, COLOR_BLACK);
     }
     for i in 1..6 {
-        init_color(i, 0, i * COLOR_BASE, 0);
+        init_color(i, i * COLOR_BASE_R, i * COLOR_BASE_G, i * COLOR_BASE_B);
     }
 
     init_color(6, COLOR_MAX, COLOR_MAX, COLOR_MAX);

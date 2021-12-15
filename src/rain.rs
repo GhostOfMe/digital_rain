@@ -26,7 +26,7 @@ pub struct Screen {
     rng: ThreadRng,
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct Drop {
     x: i32,
     y: i32,
@@ -46,7 +46,7 @@ impl Screen {
 
         let s = new_cell_vec(&mut rng, x, y);
 
-        Screen {
+        Self {
             s: s,
             drops: Vec::new(),
             max_x: x,

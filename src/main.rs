@@ -11,27 +11,6 @@ use ui::*;
 
 const TIMEOUT: u64 = 50;
 
-
-#[cfg(test)]
-mod tests{
-    use super::rain::*;
-    use test::Bencher;
-
-    #[bench]
-    fn bench_loop(b: &mut Bencher){
-        let mut s = Screen::new(200, 200);
-        b.iter(|| s.mutate_screen_loop());
-    }
-
-    #[bench]
-    fn bench_iter(b: &mut Bencher){
-        let mut s = Screen::new(200, 200);
-        b.iter(|| s.mutate_screen());
-    }
-}
-
-
-
 fn main() {
     let (height, width) = init_ui();
     let mut s = Screen::new(width, height);
