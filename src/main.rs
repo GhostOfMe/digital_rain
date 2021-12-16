@@ -23,7 +23,7 @@ fn main() {
                 .short("c")
                 .long("color")
                 .takes_value(true)
-                .help("Use the chosen color. Ex.: <--color=#123456>"),
+                .help("Use the chosen color. Ex.: <--color=#98c396>"),
         )
         .get_matches();
 
@@ -33,7 +33,6 @@ fn main() {
             let color = color_string
                 .parse::<CssColor>()
                 .expect("Wrong color format");
-            println!("{}", color);
             Some((color.r as i16, color.g as i16, color.b as i16))
         }
     };
