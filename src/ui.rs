@@ -54,16 +54,19 @@ pub fn show(s: &Screen) {
     for (j, i) in (0..s.max_y).cartesian_product(0..s.max_x) {
         unsafe {
             let cell = *s.s.get_unchecked(j).get_unchecked(i);
-            if cell.b >= 0 {
-                let b = cell.b as usize;
-                let c = if b == 0 { ' ' as u32 } else { cell.c };
-                let pair = *INTENSITY.get_unchecked(b);
-
-                attron(COLOR_PAIR(pair));
-                mv(j as i32, i as i32);
-                addstr(format!("{}", char::from_u32(c).expect("Invalid char")).as_ref());
-                attroff(COLOR_PAIR(pair));
+           
+            if cell.b < 0 {
+                continue
             }
+            
+            let b = cell.b as usize;
+            let c = if b == 0 { ' ' as u32 } else { cell.c };
+            let pair = *INTENSITY.get_unchecked(b);
+
+            attron(COLOR_PAIR(pair));
+            mv(j as i32, i as i32);
+            addstr(format!("{}", char::from_u32(c).expect("Invalid char")).as_ref());
+            attroff(COLOR_PAIR(pair));
         }
     }
     refresh();
