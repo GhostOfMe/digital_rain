@@ -54,11 +54,11 @@ pub fn show(s: &Screen) {
     for (j, i) in (0..s.max_y).cartesian_product(0..s.max_x) {
         unsafe {
             let cell = *s.s.get_unchecked(j).get_unchecked(i);
-           
+
             if cell.b < 0 {
-                continue
+                continue;
             }
-            
+
             let b = cell.b as usize;
             let c = if b == 0 { ' ' as u32 } else { cell.c };
             let pair = *INTENSITY.get_unchecked(b);

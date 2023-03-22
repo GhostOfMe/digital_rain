@@ -47,14 +47,14 @@ impl Screen {
         let s = new_cell_vec(&mut rng, x, y);
 
         Self {
-            s: s,
+            s,
             drops: Vec::new(),
             max_x: x,
             max_y: y,
             drop_rate: DROP_RATE,
             mutate_rate: MUTATE_RATE,
             dim_rate: DIM_RATE,
-            rng: rng,
+            rng,
         }
     }
 
@@ -108,8 +108,7 @@ impl Screen {
         for cell in self
             .s
             .iter_mut()
-            .map(|row| row.iter_mut())
-            .flatten()
+            .flat_map(|row| row.iter_mut())
             .filter(|c| c.b != INVISIBLE)
         {
             if cell.b == MAX_INTENSITY_INDEX {
