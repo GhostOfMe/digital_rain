@@ -141,7 +141,7 @@ impl Screen {
                         } else {
                             Cell {
                                 c: get_random_char(&mut self.rng),
-                                b: 1,
+                                b: INVISIBLE,
                             }
                         }
                     })
