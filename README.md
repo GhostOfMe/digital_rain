@@ -2,7 +2,7 @@
 
 ![Screenshot](https://github.com/GhostOfMe/DigitalRain/blob/master/data/img/screenshot.gif)
 
-Rust implementation of foating text from the movie "The Matrix".
+The Rust implementation of foating text from the movie "The Matrix".
 
 # Installation
 
