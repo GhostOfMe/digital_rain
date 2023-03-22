@@ -26,7 +26,6 @@ fn main() {
                 .help("Use the chosen color. Ex.: <--color=#98c396>"),
         )
         .get_matches();
-
     let color: Option<(i16, i16, i16)> = match app.value_of("color") {
         None => None,
         Some(color_string) => {
@@ -49,6 +48,5 @@ fn main() {
         show(&s);
         thread::sleep(time::Duration::from_millis(TIMEOUT));
     }
-
     finish();
 }
