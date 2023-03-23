@@ -1,7 +1,7 @@
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 use rand::{thread_rng, Rng};
-use std::cmp::max;
+use std::cmp::{max, min};
 
 const LATIN_START: u32 = 0x2A;
 const LATIN_END: u32 = 0x5A;
@@ -105,11 +105,21 @@ impl Screen {
     }
 
     fn mutate_screen(&mut self) {
-        for cell in self
+        let brightness_below: Vec<i8> = self
+            .s
+            .iter()
+            .flat_map(|row| row.iter().map(|c| c.b))
+            .skip(self.max_x)
+            .take(self.max_x * (self.max_y))
+            .chain((0..self.max_x).map(|_| MAX_INTENSITY_INDEX))
+            .collect();
+
+        for (cell, brightness_below) in self
             .s
             .iter_mut()
             .flat_map(|row| row.iter_mut())
-            .filter(|c| c.b != INVISIBLE)
+            .zip(brightness_below)
+            .filter(|(c, _)| c.b != INVISIBLE)
         {
             if cell.b == MAX_INTENSITY_INDEX {
                 cell.b -= 1;
@@ -125,7 +135,9 @@ impl Screen {
                 cell.c = get_random_char(&mut self.rng)
             }
 
-            if self.rng.gen::<f32>() < self.dim_rate {
+            cell.b = min(cell.b, brightness_below);
+
+            if cell.b > 0 && self.rng.gen::<f32>() < self.dim_rate {
                 cell.b -= 1
             }
         }
@@ -170,7 +182,7 @@ fn new_cell_vec(rng: &mut ThreadRng, x: usize, y: usize) -> Vec<Vec<Cell>> {
             (0..=x)
                 .map(|_| Cell {
                     c: get_random_char(rng),
-                    b: 0,
+                    b: INVISIBLE,
                 })
                 .collect()
         })

@@ -52,7 +52,7 @@ fn main() {
         }
     };
     let (height, width) = init_ui(color, background);
-    let mut s = Screen::new(width, height);
+    let mut s = Screen::new(height, width);
     loop {
         if term() {
             break;
