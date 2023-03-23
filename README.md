@@ -14,7 +14,7 @@ cargo install --path .
 ```
 # Usage
 
-The custom color is set via a command line option.
+Custom colors are set via command line options:
 ```sh
-digital_rain --color=#ff88ff
+digital_rain --color=#ff88ff --background=#2f3b35
 ```
