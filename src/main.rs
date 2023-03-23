@@ -52,16 +52,17 @@ fn main() {
         }
     };
     let (height, width) = init_ui(color, background);
-    let mut s = Screen::new(height, width);
+    let mut s = Screen::new(height-1, width-1);
     loop {
         if term() {
             break;
         }
 
-        let (y, x) = get_xy();
-        s.update(x, y);
+        let (height, width) = get_xy();
+        s.update(width, height);
         show(&s);
         thread::sleep(time::Duration::from_millis(TIMEOUT));
     }
     finish();
+    print!("{}", s.max_x)
 }

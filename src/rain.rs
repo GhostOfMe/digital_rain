@@ -41,16 +41,16 @@ pub struct Cell {
 }
 
 impl Screen {
-    pub fn new(x: usize, y: usize) -> Self {
+    pub fn new(height: usize, width: usize) -> Self {
         let mut rng = thread_rng();
 
-        let s = new_cell_vec(&mut rng, x, y);
+        let s = new_cell_vec(&mut rng, width, height);
 
         Self {
             s,
             drops: Vec::new(),
-            max_x: x,
-            max_y: y,
+            max_x: width,
+            max_y: height,
             drop_rate: DROP_RATE,
             mutate_rate: MUTATE_RATE,
             dim_rate: DIM_RATE,
@@ -58,9 +58,9 @@ impl Screen {
         }
     }
 
-    pub fn update(&mut self, new_x: usize, new_y: usize) {
-        if new_x != self.max_x || new_y != self.max_y {
-            self.resize(new_x, new_y);
+    pub fn update(&mut self, width: usize, height: usize) {
+        if width != self.max_x || height != self.max_y {
+            self.resize(width, height);
         }
 
         self.mutate_screen();
@@ -110,7 +110,7 @@ impl Screen {
             .iter()
             .flat_map(|row| row.iter().map(|c| c.b))
             .skip(self.max_x)
-            .take(self.max_x * (self.max_y))
+            .take((self.max_x) * (self.max_y - 1))
             .chain((0..self.max_x).map(|_| MAX_INTENSITY_INDEX))
             .collect();
 
@@ -119,7 +119,7 @@ impl Screen {
             .iter_mut()
             .flat_map(|row| row.iter_mut())
             .zip(brightness_below)
-            .filter(|(c, _)| c.b != INVISIBLE)
+        //     .filter(|(c, _)| c.b != INVISIBLE)
         {
             if cell.b == MAX_INTENSITY_INDEX {
                 cell.b -= 1;
@@ -176,10 +176,10 @@ fn get_random_char(rng: &mut ThreadRng) -> u32 {
         .unwrap()
 }
 
-fn new_cell_vec(rng: &mut ThreadRng, x: usize, y: usize) -> Vec<Vec<Cell>> {
-    (0..=y)
+fn new_cell_vec(rng: &mut ThreadRng, width: usize, height: usize) -> Vec<Vec<Cell>> {
+    (0..=height)
         .map(|_| {
-            (0..=x)
+            (0..=width)
                 .map(|_| Cell {
                     c: get_random_char(rng),
                     b: INVISIBLE,
