@@ -9,7 +9,10 @@ const COLOR_MAX: i16 = 1000;
 const INTENSITY: [i16; MAX_INTENSITY_INDEX as usize + 1] =
     [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
 
-pub fn init_ui(color: Option<(i16, i16, i16)>) -> (usize, usize) {
+pub fn init_ui(
+    color: Option<(i16, i16, i16)>,
+    background: Option<(i16, i16, i16)>,
+) -> (usize, usize) {
     setlocale(LcCategory::all, "en_US.UTF-8");
     let w = initscr();
     noecho();
@@ -19,13 +22,22 @@ pub fn init_ui(color: Option<(i16, i16, i16)>) -> (usize, usize) {
     start_color();
     ncurses::use_default_colors();
 
-    let (r, g, b) = match color {
+    let (rf, gf, bf) = match color {
         Some(rgb) => (
             (MUL * rgb.0 as f32) as i16,
             (MUL * rgb.1 as f32) as i16,
             (MUL * rgb.2 as f32) as i16,
         ),
         None => (0, 640 / 6, 0),
+    };
+
+    let (rb, gb, bb) = match background {
+        Some(rgb) => (
+            (MUL * rgb.0 as f32) as i16,
+            (MUL * rgb.1 as f32) as i16,
+            (MUL * rgb.2 as f32) as i16,
+        ),
+        None => (0, 0, 0),
     };
 
     init_pair(1, -1, -1);
@@ -35,7 +47,12 @@ pub fn init_ui(color: Option<(i16, i16, i16)>) -> (usize, usize) {
     }
 
     for i in 1..7 {
-        init_color(i, i * r, i * g, i * b);
+        init_color(
+            i,
+            i * rf + (7 - i) * rb,
+            i * gf + (7 - i) * gb,
+            i * bf + (7 - i) * bb,
+        );
     }
 
     init_color(8, COLOR_MAX, COLOR_MAX, COLOR_MAX);

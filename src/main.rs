@@ -17,15 +17,22 @@ const TIMEOUT: u64 = 50;
 
 fn main() {
     let app = App::new("Digital Rain")
-        .version("0.2.2")
+        .version("0.2.4")
         .arg(
             Arg::with_name("color")
                 .short("c")
                 .long("color")
                 .takes_value(true)
-                .help("Use the chosen color. Ex.: <--color=#98c396>"),
+                .help("Use the chosen foreground color. Ex.: <--color=#98c396>"))
+        .arg( 
+            Arg::with_name("background_color")
+                .short("b")
+                .long("background")
+                .takes_value(true)
+                .help("Use the chosen background color. Improves color blending. Ex.: <--background=#001020>"),
         )
         .get_matches();
+
     let color: Option<(i16, i16, i16)> = match app.value_of("color") {
         None => None,
         Some(color_string) => {
@@ -36,7 +43,16 @@ fn main() {
         }
     };
 
-    let (height, width) = init_ui(color);
+    let background: Option<(i16, i16, i16)> = match app.value_of("background_color") {
+        None => None,
+        Some(color_string) => {
+            let color = color_string
+                .parse::<CssColor>()
+                .expect("Wrong color format");
+            Some((color.r as i16, color.g as i16, color.b as i16))
+        }
+    };
+    let (height, width) = init_ui(color, background);
     let mut s = Screen::new(width, height);
     loop {
         if term() {
