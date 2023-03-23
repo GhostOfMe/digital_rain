@@ -95,5 +95,4 @@ pub fn term() -> bool {
 
 pub fn finish() {
     endwin();
-    print!("{:?} ", get_xy())
 }
