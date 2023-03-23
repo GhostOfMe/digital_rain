@@ -111,7 +111,7 @@ impl Screen {
             .flat_map(|row| row.iter().map(|c| c.b))
             .skip(self.max_x)
             .take((self.max_x) * (self.max_y - 1))
-            .chain((0..self.max_x).map(|_| MAX_INTENSITY_INDEX))
+            .chain((0..self.max_x * 2).map(|_| MAX_INTENSITY_INDEX))
             .collect();
 
         for (cell, brightness_below) in self
@@ -119,7 +119,7 @@ impl Screen {
             .iter_mut()
             .flat_map(|row| row.iter_mut())
             .zip(brightness_below)
-        //     .filter(|(c, _)| c.b != INVISIBLE)
+            .filter(|(c, _)| c.b > INVISIBLE)
         {
             if cell.b == MAX_INTENSITY_INDEX {
                 cell.b -= 1;
@@ -139,6 +139,10 @@ impl Screen {
 
             if cell.b > 0 && self.rng.gen::<f32>() < self.dim_rate {
                 cell.b -= 1
+            }
+
+            if brightness_below <= 0 {
+                cell.b = 0
             }
         }
     }
