@@ -108,6 +108,7 @@ impl Screen {
         let brightness_below: Vec<i8> = self
             .s
             .iter()
+            .rev()
             .flat_map(|row| row.iter().map(|c| c.b))
             .skip(self.max_x)
             .take((self.max_x) * (self.max_y - 1))
@@ -117,6 +118,7 @@ impl Screen {
         for (cell, brightness_below) in self
             .s
             .iter_mut()
+            .rev()
             .flat_map(|row| row.iter_mut())
             .zip(brightness_below)
             .filter(|(c, _)| c.b > INVISIBLE)
@@ -135,15 +137,11 @@ impl Screen {
                 cell.c = get_random_char(&mut self.rng)
             }
 
-            cell.b = min(cell.b, brightness_below);
-
-            if cell.b > 0 && self.rng.gen::<f32>() < self.dim_rate {
+            if self.rng.gen::<f32>() < self.dim_rate && cell.b <= brightness_below {
                 cell.b -= 1
             }
 
-            if brightness_below <= 0 {
-                cell.b = 0
-            }
+            cell.b = min(cell.b, brightness_below);
         }
     }
 

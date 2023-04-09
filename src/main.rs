@@ -64,5 +64,4 @@ fn main() {
         thread::sleep(time::Duration::from_millis(TIMEOUT));
     }
     finish();
-    print!("{}", s.max_x)
 }
