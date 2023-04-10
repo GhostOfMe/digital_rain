@@ -43,11 +43,9 @@ pub struct Cell {
 
 impl Cell {
     pub fn new(rng: &mut ThreadRng) -> Self {
-        let max_count = (MUTATE_RATE * 600.).floor() as usize;
-
         let c = get_random_char(rng);
         let b = INVISIBLE;
-        let counter = rng.gen_range(0..max_count);
+        let counter = Self::get_counter(rng);
         Self { c, b, counter }
     }
 
@@ -56,9 +54,14 @@ impl Cell {
             self.counter -= 1;
             return;
         }
-        let max_count = (MUTATE_RATE * 600.).floor() as usize;
-        self.counter = rng.gen_range(0..max_count);
+        self.counter = Self::get_counter(rng);
         self.c = get_random_char(rng);
+    }
+
+    fn get_counter(rng: &mut ThreadRng) -> usize {
+        let max_count = (MUTATE_RATE * 1200.).floor() as usize;
+
+        rng.gen_range(10..max_count)
     }
 }
 
@@ -137,7 +140,7 @@ impl Screen {
             .chain((0..self.max_x * 2).map(|_| MAX_INTENSITY_INDEX))
             .collect();
 
-        for (cell, brightness_below) in self
+        for (cell, _brightness_below) in self
             .s
             .iter_mut()
             .rev()
