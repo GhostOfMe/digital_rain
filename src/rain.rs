@@ -38,6 +38,28 @@ pub struct Cell {
     pub b: i8,
     // character
     pub c: u32,
+    counter: usize,
+}
+
+impl Cell {
+    pub fn new(rng: &mut ThreadRng) -> Self {
+        let max_count = (MUTATE_RATE * 600.).floor() as usize;
+
+        let c = get_random_char(rng);
+        let b = INVISIBLE;
+        let counter = rng.gen_range(0..max_count);
+        Self { c, b, counter }
+    }
+
+    pub fn tick(&mut self, rng: &mut ThreadRng) {
+        if self.counter > 0 {
+            self.counter -= 1;
+            return;
+        }
+        let max_count = (MUTATE_RATE * 600.).floor() as usize;
+        self.counter = rng.gen_range(0..max_count);
+        self.c = get_random_char(rng);
+    }
 }
 
 impl Screen {
@@ -132,10 +154,10 @@ impl Screen {
                 cell.b = INVISIBLE;
                 continue;
             }
-
-            if self.rng.gen::<f32>() < self.mutate_rate {
-                cell.c = get_random_char(&mut self.rng)
-            }
+            cell.tick(&mut self.rng);
+            //if self.rng.gen::<f32>() < self.mutate_rate {
+            //    cell.c = get_random_char(&mut self.rng)
+            //}
 
             if self.rng.gen::<f32>() < self.dim_rate && cell.b <= brightness_below {
                 cell.b -= 1
@@ -153,10 +175,7 @@ impl Screen {
                         if tmp_x < self.max_x && tmp_y < self.max_y {
                             self.s[tmp_y][tmp_x]
                         } else {
-                            Cell {
-                                c: get_random_char(&mut self.rng),
-                                b: INVISIBLE,
-                            }
+                            Cell::new(&mut self.rng)
                         }
                     })
                     .take(new_x)
@@ -180,13 +199,6 @@ fn get_random_char(rng: &mut ThreadRng) -> u32 {
 
 fn new_cell_vec(rng: &mut ThreadRng, width: usize, height: usize) -> Vec<Vec<Cell>> {
     (0..=height)
-        .map(|_| {
-            (0..=width)
-                .map(|_| Cell {
-                    c: get_random_char(rng),
-                    b: INVISIBLE,
-                })
-                .collect()
-        })
+        .map(|_| (0..=width).map(|_| Cell::new(rng)).collect())
         .collect()
 }
