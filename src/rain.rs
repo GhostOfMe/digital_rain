@@ -159,11 +159,14 @@ impl Screen {
             //    cell.c = get_random_char(&mut self.rng)
             //}
 
-            if self.rng.gen::<f32>() < self.dim_rate && cell.b <= brightness_below {
+            //if self.rng.gen::<f32>() < self.dim_rate && cell.b <= brightness_below {
+            //    cell.b -= 1
+            //}
+
+            if self.rng.gen::<f32>() < self.dim_rate {
                 cell.b -= 1
             }
-
-            cell.b = min(cell.b, brightness_below);
+            //cell.b = min(cell.b, brightness_below);
         }
     }
 
