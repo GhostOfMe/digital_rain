@@ -1,7 +1,8 @@
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 use rand::{thread_rng, Rng};
-use std::cmp::{max, min};
+use rand_distr::{Binomial, Distribution};
+use std::cmp::max;
 
 const LATIN_START: u32 = 0x2A;
 const LATIN_END: u32 = 0x5A;
@@ -38,30 +39,54 @@ pub struct Cell {
     pub b: i8,
     // character
     pub c: u32,
-    counter: usize,
+    flip_counter: usize,
+    dim_counter: usize,
 }
 
 impl Cell {
     pub fn new(rng: &mut ThreadRng) -> Self {
         let c = get_random_char(rng);
         let b = INVISIBLE;
-        let counter = Self::get_counter(rng);
-        Self { c, b, counter }
+        let flip_counter = Self::get_flip_counter(rng);
+        let dim_counter = Self::get_dim_counter(rng);
+        Self {
+            c,
+            b,
+            flip_counter,
+            dim_counter,
+        }
     }
 
     pub fn tick(&mut self, rng: &mut ThreadRng) {
-        if self.counter > 0 {
-            self.counter -= 1;
+        match self.b {
+            x if x >= BRIGHTEST => self.b -= 1,
+            x if x > 0 => {
+                if self.dim_counter == 0 {
+                    self.dim_counter = Self::get_dim_counter(rng);
+                    self.b -= 1
+                } else {
+                    self.dim_counter -= 1
+                }
+            }
+            x if x <= 0 => self.b = INVISIBLE,
+            _ => panic!("Wrong brightness index!"),
+        }
+
+        if self.flip_counter > 0 {
+            self.flip_counter -= 1;
             return;
         }
-        self.counter = Self::get_counter(rng);
+        self.flip_counter = Self::get_flip_counter(rng);
         self.c = get_random_char(rng);
     }
 
-    fn get_counter(rng: &mut ThreadRng) -> usize {
+    fn get_flip_counter(rng: &mut ThreadRng) -> usize {
         let max_count = (MUTATE_RATE * 1200.).floor() as usize;
-
         rng.gen_range(10..max_count)
+    }
+    fn get_dim_counter(rng: &mut ThreadRng) -> usize {
+        let bin = Binomial::new(2, DIM_RATE as f64).unwrap();
+        bin.sample(rng) as usize
     }
 }
 
@@ -130,46 +155,14 @@ impl Screen {
     }
 
     fn mutate_screen(&mut self) {
-        let brightness_below: Vec<i8> = self
-            .s
-            .iter()
-            .rev()
-            .flat_map(|row| row.iter().map(|c| c.b))
-            .skip(self.max_x)
-            .take((self.max_x) * (self.max_y - 1))
-            .chain((0..self.max_x * 2).map(|_| BRIGHTEST))
-            .collect();
-
-        for (cell, _brightness_below) in self
+        for cell in self
             .s
             .iter_mut()
             .rev()
             .flat_map(|row| row.iter_mut())
-            .zip(brightness_below)
-            .filter(|(c, _)| c.b > INVISIBLE)
+            .filter(|c| c.b > INVISIBLE)
         {
-            if cell.b == BRIGHTEST {
-                cell.b -= 1;
-                continue;
-            }
-
-            if cell.b == 0 {
-                cell.b = INVISIBLE;
-                continue;
-            }
-            cell.tick(&mut self.rng);
-            //if self.rng.gen::<f32>() < self.mutate_rate {
-            //    cell.c = get_random_char(&mut self.rng)
-            //}
-
-            //if self.rng.gen::<f32>() < self.dim_rate && cell.b <= brightness_below {
-            //    cell.b -= 1
-            //}
-
-            if self.rng.gen::<f32>() < self.dim_rate {
-                cell.b -= 1
-            }
-            //cell.b = min(cell.b, brightness_below);
+            cell.tick(&mut self.rng)
         }
     }
 

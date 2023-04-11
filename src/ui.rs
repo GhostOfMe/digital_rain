@@ -1,4 +1,4 @@
-use crate::rain::{Screen, MAX_INTENSITY_INDEX};
+use crate::rain::{Screen, BRIGHTEST};
 use itertools::Itertools;
 use ncurses::*;
 
@@ -6,8 +6,7 @@ const MUL: f32 = 0.65;
 
 const COLOR_MAX: i16 = 1000;
 
-const INTENSITY: [i16; MAX_INTENSITY_INDEX as usize + 1] =
-    [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
+const INTENSITY: [i16; BRIGHTEST as usize + 1] = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
 
 pub fn init_ui(
     color: Option<(i16, i16, i16)>,

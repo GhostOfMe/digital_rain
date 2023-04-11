@@ -10,6 +10,7 @@ edition = "2018"
 itertools = "0.10.0"
 ncurses = {version = "5.1", features=["wide"]}
 rand = "0.8.3"
+rand_distr = "0.4.3"
 clap = "2.34.0"
 css-color-parser = "0.1.2"
 
