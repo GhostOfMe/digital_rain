@@ -12,7 +12,7 @@ const DROP_RATE: f32 = 0.3;
 const MUTATE_RATE: f32 = 0.025;
 const DIM_RATE: f32 = 0.5;
 
-pub const MAX_INTENSITY_INDEX: i8 = 15;
+pub const BRIGHTEST: i8 = 15;
 const INVISIBLE: i8 = -1;
 
 pub struct Screen {
@@ -102,7 +102,7 @@ impl Screen {
                         .s
                         .get_unchecked_mut(d.y as usize)
                         .get_unchecked_mut(d.x as usize);
-                    cell.b = MAX_INTENSITY_INDEX;
+                    cell.b = BRIGHTEST;
                 }
                 Drop { x: d.x, y: d.y + 1 }
             })
@@ -137,7 +137,7 @@ impl Screen {
             .flat_map(|row| row.iter().map(|c| c.b))
             .skip(self.max_x)
             .take((self.max_x) * (self.max_y - 1))
-            .chain((0..self.max_x * 2).map(|_| MAX_INTENSITY_INDEX))
+            .chain((0..self.max_x * 2).map(|_| BRIGHTEST))
             .collect();
 
         for (cell, _brightness_below) in self
@@ -148,7 +148,7 @@ impl Screen {
             .zip(brightness_below)
             .filter(|(c, _)| c.b > INVISIBLE)
         {
-            if cell.b == MAX_INTENSITY_INDEX {
+            if cell.b == BRIGHTEST {
                 cell.b -= 1;
                 continue;
             }
