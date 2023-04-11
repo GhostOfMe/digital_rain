@@ -4,7 +4,7 @@ use rand::{thread_rng, Rng};
 use rand_distr::{Binomial, Distribution};
 use std::cmp::max;
 
-const LATIN_START: u32 = 0x2A;
+const LATIN_START: u32 = 0x30;
 const LATIN_END: u32 = 0x5A;
 const KANA_START: u32 = 0xFF66;
 const KANA_END: u32 = 0xFF9D;
