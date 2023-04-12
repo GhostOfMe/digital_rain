@@ -4,7 +4,9 @@ use rand::{thread_rng, Rng};
 use rand_distr::{Binomial, Distribution};
 use std::cmp::max;
 
-const LATIN_START: u32 = 0x30;
+const DIGIT_START: u32 = 0x30;
+const DIGIT_END: u32 = 0x39;
+const LATIN_START: u32 = 0x41;
 const LATIN_END: u32 = 0x5A;
 const KANA_START: u32 = 0xFF66;
 const KANA_END: u32 = 0xFF9D;
@@ -190,7 +192,8 @@ impl Screen {
 }
 
 fn get_random_char(rng: &mut ThreadRng) -> u32 {
-    (LATIN_START..LATIN_END)
+    (DIGIT_START..DIGIT_END)
+        .chain(LATIN_START..LATIN_END)
         .chain(KANA_START..KANA_END)
         .choose(rng)
         .unwrap()
