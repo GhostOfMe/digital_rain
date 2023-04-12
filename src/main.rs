@@ -5,7 +5,8 @@ extern crate clap;
 extern crate css_color_parser;
 extern crate ncurses;
 extern crate rand;
-extern crate test;
+#[cfg(test)]
+mod test;
 
 use clap::{App, Arg};
 use css_color_parser::Color as CssColor;

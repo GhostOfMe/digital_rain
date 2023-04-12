@@ -47,7 +47,7 @@ pub struct Cell {
 
 impl Cell {
     pub fn new(rng: &mut ThreadRng) -> Self {
-        let c = get_random_char(rng);
+        let c = get_random_char();
         let b = INVISIBLE;
         let flip_counter = Self::get_flip_counter(rng);
         let dim_counter = Self::get_dim_counter(rng);
@@ -79,9 +79,9 @@ impl Cell {
             return;
         }
         self.flip_counter = Self::get_flip_counter(rng);
-        self.c = get_random_char(rng);
+        self.c = get_random_char();
     }
-
+    #[inline]
     fn get_flip_counter(rng: &mut ThreadRng) -> usize {
         let max_count = (MUTATE_RATE * 1200.).floor() as usize;
         rng.gen_range(10..max_count)
@@ -191,11 +191,11 @@ impl Screen {
     }
 }
 
-fn get_random_char(rng: &mut ThreadRng) -> u32 {
+fn get_random_char() -> u32 {
     (DIGIT_START..DIGIT_END)
         .chain(LATIN_START..LATIN_END)
         .chain(KANA_START..KANA_END)
-        .choose(rng)
+        .choose(&mut thread_rng())
         .unwrap()
 }
 
