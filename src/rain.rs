@@ -117,16 +117,18 @@ impl Screen {
 
         self.mutate_screen();
 
-        let mut tmp_drops = self.drops.clone();
         let tmp_max_y = self.max_y as i32;
         let tmp_max_x = self.max_x as i32;
-        tmp_drops = tmp_drops
+
+        let drops_ref = &self.drops;
+        let s_ref_mut = &mut self.s;
+
+        self.drops = drops_ref
             .iter()
             .filter(|x| x.y < tmp_max_y && x.x < tmp_max_x)
             .map(|d| {
                 unsafe {
-                    let mut cell = self
-                        .s
+                    let mut cell = s_ref_mut
                         .get_unchecked_mut(d.y as usize)
                         .get_unchecked_mut(d.x as usize);
                     cell.b = BRIGHTEST;
@@ -138,13 +140,15 @@ impl Screen {
         let mut drop_mul = self.drop_rate * self.max_x as f32 / 80.;
 
         while drop_mul > 0. {
-            if self.rng.gen::<f32>() < drop_mul {
+            let rand_f32 = self.rng.gen::<f32>();
+            if rand_f32 < drop_mul {
+                let s_ref = &self.s;
                 if let Some(x) = (0..self.max_x)
-                    .filter(|x| unsafe { self.s.get_unchecked(0).get_unchecked(*x).b == -1 })
-                    .choose(&mut thread_rng())
+                    .filter(|x| unsafe { s_ref.get_unchecked(0).get_unchecked(*x).b == -1 })
+                    .choose(&mut self.rng)
                 {
                     let new_drop = Drop { y: 0, x: x as i32 };
-                    tmp_drops.push(new_drop);
+                    self.drops.push(new_drop);
                 } else {
                     break;
                 }
@@ -152,8 +156,6 @@ impl Screen {
 
             drop_mul -= 1.;
         }
-
-        self.drops = tmp_drops;
     }
 
     fn mutate_screen(&mut self) {
