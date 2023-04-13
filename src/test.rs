@@ -5,7 +5,7 @@ extern crate test;
 use test::Bencher;
 
 #[bench]
-fn bench_add_two(b: &mut Bencher) {
+fn bench_screen_update(b: &mut Bencher) {
     let (h, w) = (100, 100);
     let mut s = Screen::new(h, w);
 
