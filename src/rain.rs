@@ -138,15 +138,18 @@ impl Screen {
             .collect();
 
         let mut drop_mul = self.drop_rate * self.max_x as f32 / 80.;
+        let s_ref = &mut self.s;
 
         while drop_mul > 0. {
             let rand_f32 = self.rng.gen::<f32>();
             if rand_f32 < drop_mul {
-                let s_ref = &self.s;
                 if let Some(x) = (0..self.max_x)
                     .filter(|x| unsafe { s_ref.get_unchecked(0).get_unchecked(*x).b == -1 })
                     .choose(&mut self.rng)
                 {
+                    unsafe {
+                        s_ref.get_unchecked_mut(0).get_unchecked_mut(x).b = BRIGHTEST;
+                    }
                     let new_drop = Drop { y: 0, x: x as i32 };
                     self.drops.push(new_drop);
                 } else {
