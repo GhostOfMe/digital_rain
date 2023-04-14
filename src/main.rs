@@ -1,10 +1,11 @@
 #![feature(test)]
-mod rain;
-mod ui;
 extern crate clap;
 extern crate css_color_parser;
 extern crate ncurses;
 extern crate rand;
+
+mod rain;
+mod ui;
 #[cfg(test)]
 mod test;
 
