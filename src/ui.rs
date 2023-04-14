@@ -5,6 +5,7 @@ use ncurses::*;
 const MUL: f32 = 0.65;
 const COLOR_MAX: i16 = 1000;
 const INTENSITY: [i16; BRIGHTEST as usize + 1] = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
+const WHITESPACE: u32 = ' ' as u32;
 
 pub fn init_ui(
     color: Option<(i16, i16, i16)>,
@@ -74,12 +75,12 @@ pub fn show(s: &Screen) {
             }
 
             let b = cell.b as usize;
-            let c = if b == 0 { ' ' as u32 } else { cell.c };
+            let ch = if b == 0 { WHITESPACE } else { cell.c };
             let pair = *INTENSITY.get_unchecked(b);
 
             attron(COLOR_PAIR(pair));
             mv(j as i32, i as i32);
-            addstr(format!("{}", char::from_u32(c).expect("Invalid char")).as_ref());
+            addstr(format!("{}", char::from_u32(ch).expect("Invalid char")).as_ref());
             attroff(COLOR_PAIR(pair));
         }
     }
