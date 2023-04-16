@@ -118,7 +118,7 @@ impl Screen {
         let tmp_max_y = self.max_y as i32;
         let tmp_max_x = self.max_x as i32;
 
-        let drops_ref = &mut self.drops;
+        let drops_ref = &self.drops;
         let s_ref_mut = &mut self.s;
 
         self.drops = drops_ref
