@@ -60,18 +60,16 @@ impl Cell {
     }
 
     pub fn tick(&mut self, rng: &mut ThreadRng) {
-        match self.b {
-            x if x >= BRIGHTEST => self.b -= 1,
-            x if x > 0 => {
-                if self.dim_counter == 0 {
-                    self.dim_counter = Self::get_dim_counter(rng);
-                    self.b -= 1
-                } else {
-                    self.dim_counter -= 1
-                }
-            }
-            x if x <= 0 => self.b = INVISIBLE,
-            _ => panic!("Wrong brightness index!"),
+        if self.b <= 0 {
+            self.b = INVISIBLE;
+            return;
+        }
+
+        if self.dim_counter > 0 {
+            self.dim_counter -= 1
+        } else {
+            self.dim_counter = Self::get_dim_counter(rng);
+            self.b -= 1
         }
 
         if self.flip_counter > 0 {
@@ -120,7 +118,7 @@ impl Screen {
         let tmp_max_y = self.max_y as i32;
         let tmp_max_x = self.max_x as i32;
 
-        let drops_ref = &self.drops;
+        let drops_ref = &mut self.drops;
         let s_ref_mut = &mut self.s;
 
         self.drops = drops_ref
@@ -132,6 +130,7 @@ impl Screen {
                         .get_unchecked_mut(d.y as usize)
                         .get_unchecked_mut(d.x as usize);
                     cell.b = BRIGHTEST;
+                    cell.dim_counter = 0;
                 }
                 Drop { x: d.x, y: d.y + 1 }
             })
