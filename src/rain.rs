@@ -24,8 +24,8 @@ pub struct Screen {
     pub max_x: usize,
     pub max_y: usize,
     drop_rate: f32,
-    mutate_rate: f32,
-    dim_rate: f32,
+    _mutate_rate: f32,
+    _dim_rate: f32,
     rng: ThreadRng,
 }
 
@@ -51,7 +51,12 @@ impl Cell {
         let b = INVISIBLE;
         let flip_counter = Self::get_flip_counter(rng);
         let dim_counter = Self::get_dim_counter(rng);
-        Self { b, c, flip_counter, dim_counter }
+        Self {
+            b,
+            c,
+            flip_counter,
+            dim_counter,
+        }
     }
 
     pub fn tick(&mut self, rng: &mut ThreadRng) {
@@ -97,8 +102,8 @@ impl Screen {
             max_x: width,
             max_y: height,
             drop_rate: DROP_RATE,
-            mutate_rate: MUTATE_RATE,
-            dim_rate: DIM_RATE,
+            _mutate_rate: MUTATE_RATE,
+            _dim_rate: DIM_RATE,
             rng,
         }
     }
