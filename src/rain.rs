@@ -51,12 +51,7 @@ impl Cell {
         let b = INVISIBLE;
         let flip_counter = Self::get_flip_counter(rng);
         let dim_counter = Self::get_dim_counter(rng);
-        Self {
-            c,
-            b,
-            flip_counter,
-            dim_counter,
-        }
+        Self { b, c, flip_counter, dim_counter }
     }
 
     pub fn tick(&mut self, rng: &mut ThreadRng) {
@@ -85,7 +80,7 @@ impl Cell {
         rng.gen_range(10..max_count)
     }
     fn get_dim_counter(rng: &mut ThreadRng) -> usize {
-        let bin = Binomial::new(2, DIM_RATE as f64).unwrap();
+        let bin = Binomial::new(2, f64::from(DIM_RATE)).unwrap();
         bin.sample(rng) as usize
     }
 }

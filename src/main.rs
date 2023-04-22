@@ -11,9 +11,9 @@ mod test;
 
 use clap::{App, Arg};
 use css_color_parser::Color as CssColor;
-use rain::*;
+use rain::Screen;
 use std::{thread, time};
-use ui::*;
+use ui::{finish, get_xy, init_ui, show, term};
 
 const TIMEOUT: u64 = 50;
 
@@ -40,7 +40,7 @@ fn main() {
             let color = color_string
                 .parse::<CssColor>()
                 .expect("Wrong color format");
-            Some((color.r as i16, color.g as i16, color.b as i16))
+            Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
         }
     };
 
@@ -50,7 +50,7 @@ fn main() {
             let color = color_string
                 .parse::<CssColor>()
                 .expect("Wrong color format");
-            Some((color.r as i16, color.g as i16, color.b as i16))
+            Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
         }
     };
     let (height, width) = init_ui(color, background);

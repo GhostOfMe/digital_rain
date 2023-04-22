@@ -1,6 +1,6 @@
 use crate::rain::{Screen, BRIGHTEST};
 use itertools::Itertools;
-use ncurses::*;
+use ncurses::{COLOR_PAIR, CURSOR_VISIBILITY, LcCategory, addstr, attroff, attron, curs_set, endwin, getch, getmaxyx, init_color, init_pair, initscr, mv, nodelay, noecho, raw, refresh, setlocale, start_color, stdscr};
 
 const MUL: f32 = 0.65;
 const COLOR_MAX: i16 = 1000;
@@ -22,18 +22,18 @@ pub fn init_ui(
 
     let (rf, gf, bf) = match color {
         Some(rgb) => (
-            (MUL * rgb.0 as f32) as i16,
-            (MUL * rgb.1 as f32) as i16,
-            (MUL * rgb.2 as f32) as i16,
+            (MUL * f32::from(rgb.0)) as i16,
+            (MUL * f32::from(rgb.1)) as i16,
+            (MUL * f32::from(rgb.2)) as i16,
         ),
         None => (0, 640 / 6, 0),
     };
 
     let (rb, gb, bb) = match background {
         Some(rgb) => (
-            (MUL * rgb.0 as f32) as i16,
-            (MUL * rgb.1 as f32) as i16,
-            (MUL * rgb.2 as f32) as i16,
+            (MUL * f32::from(rgb.0)) as i16,
+            (MUL * f32::from(rgb.1)) as i16,
+            (MUL * f32::from(rgb.2)) as i16,
         ),
         None => (0, 0, 0),
     };
