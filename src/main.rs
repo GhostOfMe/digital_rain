@@ -5,9 +5,9 @@ extern crate ncurses;
 extern crate rand;
 
 mod rain;
-mod ui;
 #[cfg(test)]
 mod test;
+mod ui;
 
 use clap::{App, Arg};
 use css_color_parser::Color as CssColor;
@@ -54,7 +54,7 @@ fn main() {
         }
     };
     let (height, width) = init_ui(color, background);
-    let mut s = Screen::new(height-1, width-1);
+    let mut s = Screen::new(height - 1, width - 1);
     loop {
         if term() {
             break;

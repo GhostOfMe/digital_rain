@@ -1,6 +1,10 @@
 use crate::rain::{Screen, BRIGHTEST};
 use itertools::Itertools;
-use ncurses::{COLOR_PAIR, CURSOR_VISIBILITY, LcCategory, addstr, attroff, attron, curs_set, endwin, getch, getmaxyx, init_color, init_pair, initscr, mv, nodelay, noecho, raw, refresh, setlocale, start_color, stdscr};
+use ncurses::{
+    addstr, attroff, attron, curs_set, endwin, getch, getmaxyx, init_color, init_pair, initscr, mv,
+    nodelay, noecho, raw, refresh, setlocale, start_color, stdscr, LcCategory, COLOR_PAIR,
+    CURSOR_VISIBILITY,
+};
 
 const MUL: f32 = 0.65;
 const COLOR_MAX: i16 = 1000;
