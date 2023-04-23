@@ -196,11 +196,15 @@ impl Screen {
 }
 
 fn get_random_char() -> u32 {
-    (DIGIT_START..DIGIT_END)
+    if let Some(ch) = (DIGIT_START..DIGIT_END)
         .chain(LATIN_START..LATIN_END)
         .chain(KANA_START..KANA_END)
         .choose(&mut thread_rng())
-        .expect("Character range is empty")
+    {
+        return ch;
+    }
+
+    panic!("Character range is empty")
 }
 
 fn new_cell_vec(rng: &mut ThreadRng, width: usize, height: usize) -> Vec<Vec<Cell>> {
