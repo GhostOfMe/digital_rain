@@ -1,7 +1,7 @@
-use crate::rain::{Screen, BRIGHTEST};
+use crate::rain::{Screen, BRIGHTEST, INVISIBLE};
 use itertools::Itertools;
 use ncurses::{
-    addstr, attroff, attron, curs_set, endwin, getch, getmaxyx, init_color, init_pair, initscr, mv,
+    attroff, attron, curs_set, endwin, getch, getmaxyx, init_color, init_pair, initscr, mvaddstr,
     nodelay, noecho, raw, refresh, setlocale, start_color, stdscr, LcCategory, COLOR_PAIR,
     CURSOR_VISIBILITY,
 };
@@ -74,7 +74,7 @@ pub fn show(s: &Screen) {
         unsafe {
             let cell = *s.s.get_unchecked(j).get_unchecked(i);
 
-            if cell.b < 0 {
+            if cell.b <= INVISIBLE {
                 continue;
             }
 
@@ -83,8 +83,12 @@ pub fn show(s: &Screen) {
             let pair = *INTENSITY.get_unchecked(b);
 
             attron(COLOR_PAIR(pair));
-            mv(j as i32, i as i32);
-            addstr(format!("{}", char::from_u32(ch).expect("Invalid char")).as_ref());
+            mvaddstr(
+                j as i32,
+                i as i32,
+                format!("{}", char::from_u32(ch).expect("Invalid char")).as_ref(),
+            );
+
             attroff(COLOR_PAIR(pair));
         }
     }

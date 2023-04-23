@@ -16,7 +16,7 @@ const MUTATE_RATE: f32 = 0.025;
 const DIM_RATE: f32 = 0.5;
 
 pub const BRIGHTEST: i8 = 15;
-const INVISIBLE: i8 = -1;
+pub const INVISIBLE: i8 = -1;
 
 pub struct Screen {
     pub s: Vec<Vec<Cell>>,
