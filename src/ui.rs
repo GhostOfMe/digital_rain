@@ -11,10 +11,7 @@ const COLOR_MAX: i16 = 1000;
 const INTENSITY: [i16; BRIGHTEST as usize + 1] = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
 const WHITESPACE: u32 = ' ' as u32;
 
-pub fn init_ui(
-    color: Option<(i16, i16, i16)>,
-    background: Option<(i16, i16, i16)>,
-) -> (usize, usize) {
+pub fn init(color: Option<(i16, i16, i16)>, background: Option<(i16, i16, i16)>) -> (usize, usize) {
     setlocale(LcCategory::all, "en_US.UTF-8");
     let w = initscr();
     noecho();
@@ -24,24 +21,39 @@ pub fn init_ui(
     start_color();
     ncurses::use_default_colors();
 
-    let (rf, gf, bf) = match color {
-        Some(rgb) => (
+    //let (rf, gf, bf) = match color {
+    //    Some(rgb) => (
+    //        (MUL * f32::from(rgb.0)) as i16,
+    //        (MUL * f32::from(rgb.1)) as i16,
+    //        (MUL * f32::from(rgb.2)) as i16,
+    //    ),
+    //    None => (0, 640 / 6, 0),
+    //};
+    //
+    let (rf, gf, bf) = color.map_or((0, 640 / 6, 0), |rgb| {
+        (
             (MUL * f32::from(rgb.0)) as i16,
             (MUL * f32::from(rgb.1)) as i16,
             (MUL * f32::from(rgb.2)) as i16,
-        ),
-        None => (0, 640 / 6, 0),
-    };
+        )
+    });
 
-    let (rb, gb, bb) = match background {
-        Some(rgb) => (
+    //let (rb, gb, bb) = match background {
+    //    Some(rgb) => (
+    //        (MUL * f32::from(rgb.0)) as i16,
+    //        (MUL * f32::from(rgb.1)) as i16,
+    //        (MUL * f32::from(rgb.2)) as i16,
+    //    ),
+    //    None => (0, 0, 0),
+    //};
+
+    let (rb, gb, bb) = background.map_or((0, 0, 0), |rgb| {
+        (
             (MUL * f32::from(rgb.0)) as i16,
             (MUL * f32::from(rgb.1)) as i16,
             (MUL * f32::from(rgb.2)) as i16,
-        ),
-        None => (0, 0, 0),
-    };
-
+        )
+    });
     init_pair(1, -1, -1);
 
     for i in 1..8 {
@@ -79,15 +91,16 @@ pub fn show(s: &Screen) {
             }
 
             let b = cell.b as usize;
-            let ch = if b == 0 { WHITESPACE } else { cell.c };
+            let ch_idx = if b == 0 { WHITESPACE } else { cell.c };
+            let ch = match char::from_u32(ch_idx) {
+                Some(c) => c,
+                None => '□',
+            };
+
             let pair = *INTENSITY.get_unchecked(b);
 
             attron(COLOR_PAIR(pair));
-            mvaddstr(
-                j as i32,
-                i as i32,
-                format!("{}", char::from_u32(ch).expect("Invalid char")).as_ref(),
-            );
+            mvaddstr(j as i32, i as i32, format!("{}", ch).as_ref());
 
             attroff(COLOR_PAIR(pair));
         }

@@ -85,7 +85,7 @@ impl Cell {
         rng.gen_range(10..max_count)
     }
     fn get_dim_counter(rng: &mut ThreadRng) -> usize {
-        let bin = Binomial::new(2, f64::from(DIM_RATE)).unwrap();
+        let bin = Binomial::new(2, f64::from(DIM_RATE)).expect("Failed to create Binomial");
         bin.sample(rng) as usize
     }
 }
@@ -168,7 +168,7 @@ impl Screen {
             .flat_map(|row| row.iter_mut())
             .filter(|c| c.b > INVISIBLE)
         {
-            cell.tick(&mut self.rng)
+            cell.tick(&mut self.rng);
         }
     }
 
@@ -200,7 +200,7 @@ fn get_random_char() -> u32 {
         .chain(LATIN_START..LATIN_END)
         .chain(KANA_START..KANA_END)
         .choose(&mut thread_rng())
-        .unwrap()
+        .expect("Character range is empty")
 }
 
 fn new_cell_vec(rng: &mut ThreadRng, width: usize, height: usize) -> Vec<Vec<Cell>> {

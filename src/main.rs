@@ -14,7 +14,7 @@ use clap::{App, Arg};
 use css_color_parser::Color as CssColor;
 use rain::Screen;
 use std::{thread, time};
-use ui::{finish, get_xy, init_ui, show, term};
+use ui::{finish, get_xy, show, term};
 
 const TIMEOUT: u64 = 50;
 
@@ -35,26 +35,37 @@ fn main() {
                 .help("Use the chosen background color. Improves color blending. Ex.: <--background=#2f3b35>"))
         .get_matches();
 
-    let color: Option<(i16, i16, i16)> = match app.value_of("color") {
-        None => None,
-        Some(color_string) => {
-            let color = color_string
-                .parse::<CssColor>()
-                .expect("Wrong color format");
-            Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
-        }
-    };
+    //let color: Option<(i16, i16, i16)> = match app.value_of("color") {
+    //    None => None,
+    //    Some(color_string) => {
+    //        let color = color_string
+    //            .parse::<CssColor>()
+    //            .expect("Wrong color format");
+    //        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+    //    }
+    //};
+    //
+    let color = app.value_of("color").map_or(None, |color_string| {
+        let color = color_string.parse::<CssColor>().expect("Wrong color format");
+        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+    });
 
-    let background: Option<(i16, i16, i16)> = match app.value_of("background_color") {
-        None => None,
-        Some(color_string) => {
-            let color = color_string
-                .parse::<CssColor>()
-                .expect("Wrong color format");
-            Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
-        }
-    };
-    let (height, width) = init_ui(color, background);
+    //let background: Option<(i16, i16, i16)> = match app.value_of("background_color") {
+    //    None => None,
+    //    Some(color_string) => {
+    //        let color = color_string
+    //            .parse::<CssColor>()
+    //            .expect("Wrong color format");
+    //        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+    //    }
+    //};
+
+    let background = app.value_of("background_color").map_or(None, |color_string| {
+        let color = color_string.parse::<CssColor>().expect("Wrong color format");
+        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+    });
+
+    let (height, width) = ui::init(color, background);
     let mut s = Screen::new(height - 1, width - 1);
     loop {
         if term() {
