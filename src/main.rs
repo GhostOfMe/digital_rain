@@ -1,5 +1,5 @@
 #![feature(test)]
-#[allow(clippy::cast_possible_truncation)]
+#![allow(clippy::cast_possible_truncation)]
 extern crate clap;
 extern crate css_color_parser;
 extern crate ncurses;
