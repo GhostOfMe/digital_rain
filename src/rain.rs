@@ -66,10 +66,10 @@ impl Cell {
         }
 
         if self.dim_counter > 0 {
-            self.dim_counter -= 1
+            self.dim_counter -= 1;
         } else {
             self.dim_counter = Self::get_dim_counter(rng);
-            self.b -= 1
+            self.b -= 1;
         }
 
         if self.flip_counter > 0 {
