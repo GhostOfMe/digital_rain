@@ -110,6 +110,9 @@ pub fn term() -> bool {
 }
 
 pub fn finish() -> Result<(), ()> {
-    endwin();
-    Ok(())
+    match endwin() {
+        0 => Ok(()),
+        1 => Err(()),
+        _ => panic!("Wrong return code"),
+    }
 }
