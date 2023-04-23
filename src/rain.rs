@@ -1,5 +1,3 @@
-#![allow(clippy::cast_possible_truncation)]
-
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 use rand::{thread_rng, Rng};
