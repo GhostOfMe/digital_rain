@@ -51,7 +51,7 @@ fn main() -> Result<(), ()>{
     //});
 
     let color = app.value_of("color").map(|color_string| {
-        color_string.parse::<CssColor>().map_or_else(|_| panic!(), |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+        color_string.parse::<CssColor>().map_or_else(|_| panic!("Parse Error"), |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)))
     });
 
     //let background: Option<(i16, i16, i16)> = match app.value_of("background_color") {
@@ -65,7 +65,7 @@ fn main() -> Result<(), ()>{
     //};
 
     let background = app.value_of("background_color").map(|color_string| {
-        color_string.parse::<CssColor>().map_or_else(|_| panic!(), |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+        color_string.parse::<CssColor>().map_or_else(|_| panic!("Parse Error"), |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)))
     });
 
     let (height, width) = ui::init(color, background);
