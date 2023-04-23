@@ -61,8 +61,11 @@ fn main() -> Result<(), ()>{
     //};
 
     let background = app.value_of("background_color").map(|color_string| {
-        let color = color_string.parse::<CssColor>().expect("Wrong color format");
-        (i16::from(color.r), i16::from(color.g), i16::from(color.b))
+        match color_string.parse::<CssColor>(){
+         Ok(color) => (i16::from(color.r), i16::from(color.g), i16::from(color.b)),
+         Err(_) =>   panic!()
+        }
+
     });
 
     let (height, width) = ui::init(color, background);
