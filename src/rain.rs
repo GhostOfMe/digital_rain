@@ -144,7 +144,7 @@ impl Screen {
             let rand_f32 = self.rng.gen::<f32>();
             if rand_f32 < drop_mul {
                 if let Some(x) = (0..self.max_x)
-                    .filter(|x| unsafe { s_ref.get_unchecked(0).get_unchecked(*x).b == -1 })
+                    .filter(|x| unsafe { s_ref.get_unchecked(0).get_unchecked(*x).b == INVISIBLE })
                     .choose(&mut self.rng)
                 {
                     unsafe {
