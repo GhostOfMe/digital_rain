@@ -85,8 +85,7 @@ impl Cell {
         rng.gen_range(10..max_count)
     }
     fn get_dim_counter(rng: &mut ThreadRng) -> usize {
-        let bin = Binomial::new(2, f64::from(DIM_RATE))
-            .map_or_else(|_| panic!("Unable to create Binomial"), |n| n);
+        let bin = Binomial::new(2, f64::from(DIM_RATE)).map_or_else(|err| panic!("{}", err), |n| n);
         bin.sample(rng) as usize
     }
 }
