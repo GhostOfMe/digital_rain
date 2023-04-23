@@ -1,5 +1,3 @@
-#![feature(test)]
-
 use super::*;
 extern crate test;
 use test::Bencher;

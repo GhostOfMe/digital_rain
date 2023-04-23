@@ -92,15 +92,12 @@ pub fn show(s: &Screen) {
 
             let b = cell.b as usize;
             let ch_idx = if b == 0 { WHITESPACE } else { cell.c };
-            let ch = match char::from_u32(ch_idx) {
-                Some(c) => c,
-                None => '□',
-            };
+            let ch = char::from_u32(ch_idx).unwrap_or('□');
 
             let pair = *INTENSITY.get_unchecked(b);
 
             attron(COLOR_PAIR(pair));
-            mvaddstr(j as i32, i as i32, format!("{}", ch).as_ref());
+            mvaddstr(j as i32, i as i32, format!("{ch}").as_ref());
 
             attroff(COLOR_PAIR(pair));
         }
@@ -112,6 +109,7 @@ pub fn term() -> bool {
     getch() == 3
 }
 
-pub fn finish() {
+pub fn finish() -> Result<(), ()> {
     endwin();
+    Ok(())
 }

@@ -18,7 +18,7 @@ use ui::{finish, get_xy, show, term};
 
 const TIMEOUT: u64 = 50;
 
-fn main() {
+fn main() -> Result<(), ()>{
     let app = App::new("Digital Rain")
         .version("0.2.4")
         .arg(
@@ -45,9 +45,9 @@ fn main() {
     //    }
     //};
     //
-    let color = app.value_of("color").map_or(None, |color_string| {
+    let color = app.value_of("color").map(|color_string| {
         let color = color_string.parse::<CssColor>().expect("Wrong color format");
-        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+        (i16::from(color.r), i16::from(color.g), i16::from(color.b))
     });
 
     //let background: Option<(i16, i16, i16)> = match app.value_of("background_color") {
@@ -60,9 +60,9 @@ fn main() {
     //    }
     //};
 
-    let background = app.value_of("background_color").map_or(None, |color_string| {
+    let background = app.value_of("background_color").map(|color_string| {
         let color = color_string.parse::<CssColor>().expect("Wrong color format");
-        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
+        (i16::from(color.r), i16::from(color.g), i16::from(color.b))
     });
 
     let (height, width) = ui::init(color, background);
@@ -77,5 +77,5 @@ fn main() {
         show(&s);
         thread::sleep(time::Duration::from_millis(TIMEOUT));
     }
-    finish();
+    finish()
 }
