@@ -30,7 +30,7 @@ fn main() -> Result<(), ()> {
                 .long("color")
                 .takes_value(true)
                 .help("Use the chosen foreground color. Ex.: <--color=#98c396>"))
-        .arg( 
+        .arg(
             Arg::with_name("background_color")
                 .short("b")
                 .long("background")
