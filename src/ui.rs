@@ -1,4 +1,3 @@
-#![allow(clippy::cast_possible_truncation)]
 use crate::rain::{Screen, BRIGHTEST, INVISIBLE};
 use itertools::Itertools;
 use ncurses::{
