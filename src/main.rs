@@ -46,7 +46,7 @@ fn main() -> Result<(), ()>{
     //};
     //
     let color = app.value_of("color").map(|color_string| {
-        let color = color_string.parse::<CssColor>().expect("Wrong color format");
+        let color = color_string.parse::<CssColor>().expect("");
         (i16::from(color.r), i16::from(color.g), i16::from(color.b))
     });
 
