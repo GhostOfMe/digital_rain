@@ -2,7 +2,7 @@
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_sign_loss)]
 #![allow(clippy::cast_possible_wrap)]
-#![allow(clippy::cast-precision-loss)]
+#![allow(clippy::cast_precision-loss)]
 extern crate clap;
 extern crate css_color_parser;
 extern crate ncurses;
