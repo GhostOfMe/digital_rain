@@ -45,9 +45,13 @@ fn main() -> Result<(), ()>{
     //    }
     //};
     //
+    //let color = app.value_of("color").map(|color_string| {
+    //    let color = color_string.parse::<CssColor>().expect("");
+    //    (i16::from(color.r), i16::from(color.g), i16::from(color.b))
+    //});
+
     let color = app.value_of("color").map(|color_string| {
-        let color = color_string.parse::<CssColor>().expect("");
-        (i16::from(color.r), i16::from(color.g), i16::from(color.b))
+        color_string.parse::<CssColor>().map_or_else(|_| panic!(), |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)))
     });
 
     //let background: Option<(i16, i16, i16)> = match app.value_of("background_color") {
