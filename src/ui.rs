@@ -22,15 +22,6 @@ pub fn init(color: Option<(i16, i16, i16)>, background: Option<(i16, i16, i16)>)
     start_color();
     ncurses::use_default_colors();
 
-    //let (rf, gf, bf) = match color {
-    //    Some(rgb) => (
-    //        (MUL * f32::from(rgb.0)) as i16,
-    //        (MUL * f32::from(rgb.1)) as i16,
-    //        (MUL * f32::from(rgb.2)) as i16,
-    //    ),
-    //    None => (0, 640 / 6, 0),
-    //};
-    //
     let (rf, gf, bf) = color.map_or((0, 640 / 6, 0), |rgb| {
         (
             (MUL * f32::from(rgb.0)) as i16,
@@ -38,15 +29,6 @@ pub fn init(color: Option<(i16, i16, i16)>, background: Option<(i16, i16, i16)>)
             (MUL * f32::from(rgb.2)) as i16,
         )
     });
-
-    //let (rb, gb, bb) = match background {
-    //    Some(rgb) => (
-    //        (MUL * f32::from(rgb.0)) as i16,
-    //        (MUL * f32::from(rgb.1)) as i16,
-    //        (MUL * f32::from(rgb.2)) as i16,
-    //    ),
-    //    None => (0, 0, 0),
-    //};
 
     let (rb, gb, bb) = background.map_or((0, 0, 0), |rgb| {
         (

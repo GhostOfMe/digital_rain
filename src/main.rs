@@ -38,37 +38,12 @@ fn main() -> Result<(), ()> {
                 .help("Use the chosen background color. Improves color blending. Ex.: <--background=#2f3b35>"))
         .get_matches();
 
-    //let color: Option<(i16, i16, i16)> = match app.value_of("color") {
-    //    None => None,
-    //    Some(color_string) => {
-    //        let color = color_string
-    //            .parse::<CssColor>()
-    //            .expect("Wrong color format");
-    //        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
-    //    }
-    //};
-    //
-    //let color = app.value_of("color").map(|color_string| {
-    //    let color = color_string.parse::<CssColor>().expect("");
-    //    (i16::from(color.r), i16::from(color.g), i16::from(color.b))
-    //});
-
     let color = app.value_of("color").map(|color_string| {
         color_string.parse::<CssColor>().map_or_else(
             |_| panic!("Parse Error"),
             |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)),
         )
     });
-
-    //let background: Option<(i16, i16, i16)> = match app.value_of("background_color") {
-    //    None => None,
-    //    Some(color_string) => {
-    //        let color = color_string
-    //            .parse::<CssColor>()
-    //            .expect("Wrong color format");
-    //        Some((i16::from(color.r), i16::from(color.g), i16::from(color.b)))
-    //    }
-    //};
 
     let background = app.value_of("background_color").map(|color_string| {
         color_string.parse::<CssColor>().map_or_else(
