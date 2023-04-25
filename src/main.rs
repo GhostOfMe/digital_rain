@@ -40,14 +40,20 @@ fn main() -> Result<(), ()> {
 
     let color = app.value_of("color").map(|color_string| {
         color_string.parse::<CssColor>().map_or_else(
-            |err| panic!("{}", err),
+            |err| {
+                eprintln!("Problem parsing color string: {err}");
+                std::process::exit(1)
+            },
             |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)),
         )
     });
 
     let background = app.value_of("background_color").map(|color_string| {
         color_string.parse::<CssColor>().map_or_else(
-            |err| panic!("{}", err),
+            |err| {
+                eprintln!("Problem parsing color string: {err}");
+                std::process::exit(1)
+            },
             |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)),
         )
     });
