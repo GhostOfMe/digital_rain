@@ -14,14 +14,13 @@ mod test;
 mod ui;
 
 use clap::{App, Arg};
-use css_color_parser::Color as CssColor;
 use rain::Screen;
 use std::{thread, time};
-use ui::{finish, get_xy, show, term};
+use ui::{finish, get_xy, show, term, Config};
 
 const TIMEOUT: u64 = 50;
 
-fn main() -> Result<(), ()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = App::new("Digital Rain")
         .version("0.2.4")
         .arg(
@@ -38,27 +37,17 @@ fn main() -> Result<(), ()> {
                 .help("Use the chosen background color. Improves color blending. Ex.: <--background=#2f3b35>"))
         .get_matches();
 
-    let color = app.value_of("color").map(|color_string| {
-        color_string.parse::<CssColor>().map_or_else(
-            |err| {
-                eprintln!("Problem parsing color string: {err}");
-                std::process::exit(1)
-            },
-            |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)),
-        )
-    });
+    let mut config = Config::new();
 
-    let background = app.value_of("background_color").map(|color_string| {
-        color_string.parse::<CssColor>().map_or_else(
-            |err| {
-                eprintln!("Problem parsing color string: {err}");
-                std::process::exit(1)
-            },
-            |color| (i16::from(color.r), i16::from(color.g), i16::from(color.b)),
-        )
-    });
+    if let Some(s) = app.value_of("color") {
+        config.set_foreground(s.into())?;
+    }
 
-    let (height, width) = ui::init(color, background);
+    if let Some(s) = app.value_of("background_color") {
+        config.set_background(s.into())?;
+    }
+
+    let (height, width) = ui::init(config);
     let mut s = Screen::new(height - 1, width - 1);
     loop {
         if term() {

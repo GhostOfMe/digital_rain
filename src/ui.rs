@@ -6,12 +6,58 @@ use ncurses::{
     CURSOR_VISIBILITY,
 };
 
+use css_color_parser::Color as CssColor;
+
 const MUL: f32 = 0.65;
 const COLOR_MAX: i16 = 1000;
 const INTENSITY: [i16; BRIGHTEST as usize + 1] = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
 const WHITESPACE: u32 = ' ' as u32;
 
-pub fn init(color: Option<(i16, i16, i16)>, background: Option<(i16, i16, i16)>) -> (usize, usize) {
+struct Color {
+    r: i16,
+    g: i16,
+    b: i16,
+}
+
+impl From<[u8; 3]> for Color {
+    fn from(value: [u8; 3]) -> Self {
+        Self {
+            r: value[0] as i16,
+            g: value[1] as i16,
+            b: value[2] as i16,
+        }
+    }
+}
+
+pub struct Config {
+    color: Color,
+    background: Color,
+}
+
+impl Config {
+    pub fn new() -> Self {
+        Self {
+            color: [0, 255, 0].into(),
+            background: [0, 0, 0].into(),
+        }
+    }
+
+    fn parse_color(string: String) -> Result<Color, Box<dyn std::error::Error>> {
+        let c = string.parse::<CssColor>()?;
+        Ok([c.r, c.g, c.b].into())
+    }
+
+    pub fn set_foreground(&mut self, string: String) -> Result<(), Box<dyn std::error::Error>> {
+        self.color = Self::parse_color(string)?;
+        Ok(())
+    }
+    pub fn set_background(&mut self, string: String) -> Result<(), Box<dyn std::error::Error>> {
+        self.background = Self::parse_color(string)?;
+        Ok(())
+    }
+}
+
+pub fn init(config: Config) -> (usize, usize) {
     setlocale(LcCategory::all, "en_US.UTF-8");
     let w = initscr();
     noecho();
@@ -21,21 +67,17 @@ pub fn init(color: Option<(i16, i16, i16)>, background: Option<(i16, i16, i16)>)
     start_color();
     ncurses::use_default_colors();
 
-    let (rf, gf, bf) = color.map_or((0, 640 / 6, 0), |rgb| {
-        (
-            (MUL * f32::from(rgb.0)) as i16,
-            (MUL * f32::from(rgb.1)) as i16,
-            (MUL * f32::from(rgb.2)) as i16,
-        )
-    });
+    let (rf, gf, bf) = (
+        (MUL * f32::from(config.color.r)) as i16,
+        (MUL * f32::from(config.color.g)) as i16,
+        (MUL * f32::from(config.color.b)) as i16,
+    );
 
-    let (rb, gb, bb) = background.map_or((0, 0, 0), |rgb| {
-        (
-            (MUL * f32::from(rgb.0)) as i16,
-            (MUL * f32::from(rgb.1)) as i16,
-            (MUL * f32::from(rgb.2)) as i16,
-        )
-    });
+    let (rb, gb, bb) = (
+        (MUL * f32::from(config.background.r)) as i16,
+        (MUL * f32::from(config.background.g)) as i16,
+        (MUL * f32::from(config.background.b)) as i16,
+    );
     init_pair(1, -1, -1);
 
     for i in 1..8 {
@@ -91,10 +133,10 @@ pub fn term() -> bool {
     getch() == 3
 }
 
-pub fn finish() -> Result<(), ()> {
+pub fn finish() -> Result<(), Box<dyn std::error::Error>> {
     match endwin() {
         0 => Ok(()),
-        1 => Err(()),
+        1 => Err("1".into()),
         _ => panic!("Wrong return code"),
     }
 }
