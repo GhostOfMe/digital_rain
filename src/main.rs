@@ -40,14 +40,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut config = Config::new();
 
     if let Some(s) = app.value_of("color") {
-        config.set_foreground(s.into())?;
+        config.set_foreground(s)?;
     }
 
     if let Some(s) = app.value_of("background_color") {
-        config.set_background(s.into())?;
+        config.set_background(s)?;
     }
 
-    let (height, width) = ui::init(config);
+    let (height, width) = ui::init(&config);
     let mut s = Screen::new(height - 1, width - 1);
     loop {
         if term() {

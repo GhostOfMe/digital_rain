@@ -22,9 +22,9 @@ struct Color {
 impl From<[u8; 3]> for Color {
     fn from(value: [u8; 3]) -> Self {
         Self {
-            r: value[0] as i16,
-            g: value[1] as i16,
-            b: value[2] as i16,
+            r: i16::from(value[0]),
+            g: i16::from(value[1]),
+            b: i16::from(value[2]),
         }
     }
 }
@@ -42,22 +42,22 @@ impl Config {
         }
     }
 
-    fn parse_color(string: String) -> Result<Color, Box<dyn std::error::Error>> {
+    fn parse_color(string: &str) -> Result<Color, Box<dyn std::error::Error>> {
         let c = string.parse::<CssColor>()?;
         Ok([c.r, c.g, c.b].into())
     }
 
-    pub fn set_foreground(&mut self, string: String) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn set_foreground(&mut self, string: &str) -> Result<(), Box<dyn std::error::Error>> {
         self.color = Self::parse_color(string)?;
         Ok(())
     }
-    pub fn set_background(&mut self, string: String) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn set_background(&mut self, string: &str) -> Result<(), Box<dyn std::error::Error>> {
         self.background = Self::parse_color(string)?;
         Ok(())
     }
 }
 
-pub fn init(config: Config) -> (usize, usize) {
+pub fn init(config: &Config) -> (usize, usize) {
     setlocale(LcCategory::all, "en_US.UTF-8");
     let w = initscr();
     noecho();
