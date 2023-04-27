@@ -132,7 +132,7 @@ impl Screen {
                     cell.b = BRIGHTEST;
                     cell.dim_counter = 0;
                 }
-                Drop { x: d.x, y: d.y + 1 }
+                Drop { y: d.y + 1, ..*d }
             })
             .collect();
 
