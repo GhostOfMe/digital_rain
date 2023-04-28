@@ -29,6 +29,12 @@ impl From<[u8; 3]> for Color {
     }
 }
 
+impl From<CssColor> for Color {
+    fn from(value: CssColor) -> Self{
+        [value.r, value.g, value.b].into()    
+    } 
+}
+
 pub struct Config {
     color: Color,
     background: Color,
@@ -44,7 +50,7 @@ impl Config {
 
     fn parse_color(string: &str) -> Result<Color, Box<dyn std::error::Error>> {
         let c = string.parse::<CssColor>()?;
-        Ok([c.r, c.g, c.b].into())
+        Ok(c.into())
     }
 
     pub fn set_foreground(&mut self, string: &str) -> Result<(), Box<dyn std::error::Error>> {
