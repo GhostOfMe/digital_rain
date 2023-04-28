@@ -30,9 +30,9 @@ impl From<[u8; 3]> for Color {
 }
 
 impl From<CssColor> for Color {
-    fn from(value: CssColor) -> Self{
-        [value.r, value.g, value.b].into()    
-    } 
+    fn from(value: CssColor) -> Self {
+        [value.r, value.g, value.b].into()
+    }
 }
 
 pub struct Config {
