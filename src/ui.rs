@@ -6,34 +6,12 @@ use ncurses::{
     CURSOR_VISIBILITY,
 };
 
-use css_color_parser::Color as CssColor;
+use css_color_parser::Color;
 
 const MUL: f32 = 0.65;
 const COLOR_MAX: i16 = 1000;
 const INTENSITY: [i16; BRIGHTEST as usize + 1] = [1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 4, 7];
 const WHITESPACE: u32 = ' ' as u32;
-
-struct Color {
-    r: i16,
-    g: i16,
-    b: i16,
-}
-
-impl From<[u8; 3]> for Color {
-    fn from(value: [u8; 3]) -> Self {
-        Self {
-            r: i16::from(value[0]),
-            g: i16::from(value[1]),
-            b: i16::from(value[2]),
-        }
-    }
-}
-
-impl From<CssColor> for Color {
-    fn from(value: CssColor) -> Self {
-        [value.r, value.g, value.b].into()
-    }
-}
 
 pub struct Config {
     color: Color,
@@ -43,13 +21,23 @@ pub struct Config {
 impl Config {
     pub fn new() -> Self {
         Self {
-            color: [0, 255, 0].into(),
-            background: [0, 0, 0].into(),
+            color: Color {
+                r: 0,
+                g: 255,
+                b: 0,
+                a: 1.0,
+            },
+            background: Color {
+                r: 0,
+                g: 255,
+                b: 0,
+                a: 1.0,
+            },
         }
     }
 
     fn parse_color(string: &str) -> Result<Color, Box<dyn std::error::Error>> {
-        let c = string.parse::<CssColor>()?;
+        let c = string.parse::<Color>()?;
         Ok(c.into())
     }
 
