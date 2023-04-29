@@ -19,7 +19,7 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             color: Color {
                 r: 0,
@@ -38,7 +38,7 @@ impl Config {
 
     fn parse_color(string: &str) -> Result<Color, Box<dyn std::error::Error>> {
         let c = string.parse::<Color>()?;
-        Ok(c.into())
+        Ok(c)
     }
 
     pub fn set_foreground(&mut self, string: &str) -> Result<(), Box<dyn std::error::Error>> {
