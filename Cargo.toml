@@ -1,7 +1,7 @@
 [package]
 name = "digital_rain"
 version = "0.2.4"
-authors = ["JQ <nail.prophet@gmail.com>"]
+authors = ["https://github.com/GhostOfMe/"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
